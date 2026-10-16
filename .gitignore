@@ -1,0 +1,26 @@
+# React
+**/node_modules/
+**/dist/
+**/build/
+**/.env
+**/.env.*
+!**/.env.example
+
+# Spring Boot
+**/target/
+**/*.jar
+**/*.class
+
+# IDE
+**/.idea/
+**/.vscode/
+
+# Sensitive files
+**/*.pem
+**/*.key
+**/*.p12
+**/application-local.properties
+**/application-prod.properties
+
+# Logs
+*.log

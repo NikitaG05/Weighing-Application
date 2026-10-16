@@ -1,0 +1,240 @@
+.login-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  box-sizing: border-box;
+  background: #f3f6fb;
+  color: #172b4d;
+  font-family: Arial, sans-serif;
+}
+
+.login-panel {
+  width: 100%;
+  max-width: 480px;
+  overflow: hidden;
+  border: 1px solid #dce4ef;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(23, 43, 77, 0.1);
+}
+
+.login-title {
+  padding: 12px 18px;
+  background: #172b4d;
+  color: #ffffff;
+  text-align: left;
+  font-size: 14px;
+}
+
+.login-brand {
+  padding: 28px 16px;
+  background: #ffffff;
+  text-align: center;
+}
+
+.login-brand h1 {
+  margin: 0;
+  color: #172b4d;
+  font-size: clamp(26px, 6vw, 38px);
+  letter-spacing: 2px;
+}
+
+.login-brand p {
+  margin: 6px 0 0;
+  color: #087f8c;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 2px;
+}
+
+.login-content {
+  padding: 28px;
+  background: #f8fafc;
+}
+
+.login-row {
+  display: grid;
+  grid-template-columns: 105px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.login-row label {
+  color: #172b4d;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.login-row input {
+  width: 100%;
+  min-width: 0;
+  height: 40px;
+  padding: 8px 12px;
+  box-sizing: border-box;
+  border: 1px solid #cbd5e1;
+  border-radius: 5px;
+  background: #ffffff;
+  color: #172b4d;
+  font-family: inherit;
+  font-size: 15px;
+  transition: border-color 180ms ease;
+}
+
+.login-row input:hover:not(:disabled) {
+  border-color: #94a3b8;
+}
+
+.login-row input:focus {
+  border-color: #087f8c;
+  outline: 2px solid #087f8c;
+  outline-offset: 2px;
+}
+
+.login-row input:disabled {
+  background: #eef2f6;
+  color: #64748b;
+}
+
+/* Password input and eye button */
+.password-field {
+  position: relative;
+  min-width: 0;
+}
+
+.password-field input {
+  padding-right: 44px;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 4px;
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+  transition:
+    background-color 180ms ease,
+    color 180ms ease;
+}
+
+.password-toggle:hover:not(:disabled) {
+  background: #e8f5f5;
+  color: #087f8c;
+}
+
+.password-toggle:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* Login and Clear buttons */
+.login-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 14px;
+  margin-top: 24px;
+}
+
+.login-button,
+.clear-button {
+  min-width: 105px;
+  padding: 10px 18px;
+  border: 1px solid;
+  border-radius: 5px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease;
+}
+
+.login-button {
+  border-color: #087f8c;
+  background: #087f8c;
+  color: #ffffff;
+}
+
+.login-button:hover:not(:disabled) {
+  border-color: #066773;
+  background: #066773;
+}
+
+.clear-button {
+  border-color: #cbd5e1;
+  background: #ffffff;
+  color: #172b4d;
+}
+
+.clear-button:hover:not(:disabled) {
+  border-color: #087f8c;
+  background: #e8f5f5;
+}
+
+.login-button:disabled,
+.clear-button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.login-button:focus-visible,
+.clear-button:focus-visible,
+.password-toggle:focus-visible {
+  outline: 2px solid #087f8c;
+  outline-offset: 3px;
+}
+
+.login-error {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 5px;
+  background: #fff1f2;
+  color: #b42318;
+  text-align: left;
+  font-size: 14px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+/* Small screens */
+@media (max-width: 420px) {
+  .login-content {
+    padding: 22px;
+  }
+
+  .login-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .login-actions {
+    justify-content: stretch;
+  }
+
+  .login-button,
+  .clear-button {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .login-row input,
+  .password-toggle,
+  .login-button,
+  .clear-button {
+    transition: none;
+  }
+}
