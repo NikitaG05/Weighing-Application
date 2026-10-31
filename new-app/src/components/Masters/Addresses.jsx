@@ -27,7 +27,7 @@ function Addresses({ accessToken }) {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [lookingUp, setLookingUp] = useState(false);
-  const [deletingId, setDeletingId] = useState(null);
+  const [, setDeletingId] = useState(null);
 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -357,7 +357,7 @@ function Addresses({ accessToken }) {
               }}
               autoComplete="off"
               disabled={saving}
-              aria-expanded={showCitySuggestions}
+              
               aria-controls="address-city-options"
               required
             />

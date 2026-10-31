@@ -1,5 +1,5 @@
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback,useEffect, useMemo, useState } from "react";
 import { getParties, saveParty } from "../../api/partyApi";
 import "../../style/PartyMaster.css";
 
@@ -35,7 +35,7 @@ function PartyMaster({ siteId, onDataChange }) {
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState(emptyParty);
 
-  const loadParties = async () => {
+ const loadParties = useCallback(async () => {
     try {
       setLoading(true);
       setError("");
@@ -47,13 +47,13 @@ function PartyMaster({ siteId, onDataChange }) {
     } finally {
       setLoading(false);
     }
-  };
+}, [siteId]);
 
   useEffect(() => {
     if (siteId != null) {
       loadParties();
     }
-  }, [siteId]);
+  }, [siteId, loadParties]);
 
   const partyTypes = useMemo(
     () =>
