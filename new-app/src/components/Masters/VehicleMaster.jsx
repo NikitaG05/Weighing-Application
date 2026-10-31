@@ -1,5 +1,5 @@
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback,useEffect, useMemo, useState } from "react";
 import { getParties } from "../../api/partyApi";
 import { getVehicles, saveVehicle } from "../../api/vehicleApi";
 import "../../style/VehicleMaster.css";
@@ -30,7 +30,7 @@ function VehicleMaster({ siteId, onDataChange }) {
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState({ ...emptyVehicle });
 
-  const loadData = async () => {
+ const loadData = useCallback(async () => {
     if (siteId == null) {
       setVehicles([]);
       setParties([]);
@@ -59,11 +59,11 @@ function VehicleMaster({ siteId, onDataChange }) {
     } finally {
       setLoading(false);
     }
-  };
+}, [siteId]);
 
   useEffect(() => {
     loadData();
-  }, [siteId]);
+  }, [loadData]);
 
   const filteredVehicles = useMemo(() => {
     const keyword = search.trim().toLowerCase();
