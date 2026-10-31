@@ -1,0 +1,262 @@
+
+.ptm-page {
+  padding: 24px;
+  color: #172b4d;
+  background: #f5f8fc;
+  min-height: 100%;
+}
+
+.ptm-header,
+.ptm-section-heading,
+.ptm-form-actions,
+.ptm-row-actions,
+.ptm-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.ptm-header {
+  margin-bottom: 24px;
+}
+
+.ptm-header h2 {
+  font-size: 26px;
+  margin: 0 0 6px;
+  font-weight: 700;
+}
+
+.ptm-header p {
+  margin: 0;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.ptm-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 24px;
+  margin-bottom: 22px;
+  box-shadow: 0 3px 14px rgba(15, 23, 42, 0.04);
+}
+
+.ptm-section-heading {
+  margin-bottom: 20px;
+}
+
+.ptm-section-heading h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.ptm-count {
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.ptm-form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.ptm-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.ptm-field input,
+.ptm-field select,
+.ptm-toolbar input,
+.ptm-toolbar select {
+  width: 100%;
+  padding: 11px 13px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #172b4d;
+  font-size: 14px;
+  box-sizing: border-box;
+  outline: none;
+}
+
+.ptm-field input:focus,
+.ptm-field select:focus,
+.ptm-toolbar input:focus,
+.ptm-toolbar select:focus {
+  border-color: #0891b2;
+  box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.12);
+}
+
+.ptm-form-actions {
+  justify-content: flex-start;
+  margin-top: 22px;
+}
+
+.ptm-button {
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.ptm-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.ptm-button-primary {
+  background: #0891b2;
+  color: #ffffff;
+}
+
+.ptm-button-primary:hover:not(:disabled) {
+  background: #0e7490;
+}
+
+.ptm-button-secondary {
+  background: #e2e8f0;
+  color: #334155;
+}
+
+.ptm-button-secondary:hover:not(:disabled) {
+  background: #cbd5e1;
+}
+
+.ptm-toolbar {
+  justify-content: flex-start;
+  margin-bottom: 18px;
+}
+
+.ptm-toolbar input {
+  max-width: 340px;
+}
+
+.ptm-toolbar select {
+  max-width: 180px;
+}
+
+.ptm-table-wrapper {
+  overflow-x: auto;
+}
+
+.ptm-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 14px;
+}
+
+.ptm-table th {
+  padding: 13px 14px;
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.ptm-table td {
+  padding: 14px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.ptm-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+.ptm-status {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.ptm-status-active {
+  color: #166534;
+  background: #dcfce7;
+}
+
+.ptm-status-inactive {
+  color: #991b1b;
+  background: #fee2e2;
+}
+
+.ptm-row-actions {
+  justify-content: flex-start;
+  gap: 8px;
+}
+
+.ptm-button-edit {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.ptm-button-delete {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.ptm-empty {
+  text-align: center;
+  color: #64748b;
+  padding: 30px !important;
+}
+
+.ptm-alert {
+  padding: 12px 16px;
+  margin-bottom: 18px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.ptm-alert-error {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+.ptm-alert-success {
+  background: #f0fdf4;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+@media (max-width: 768px) {
+  .ptm-page {
+    padding: 14px;
+  }
+
+  .ptm-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .ptm-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ptm-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .ptm-toolbar input,
+  .ptm-toolbar select {
+    max-width: none;
+  }
+
+  .ptm-card {
+    padding: 16px;
+  }
+}

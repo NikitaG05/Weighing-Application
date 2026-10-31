@@ -1,12 +1,17 @@
-import logo from './logo.svg';
-import './App.css';
-import ApplicationRout from './router/ApplicationRout';
+
+import "./App.css";
+import "./style/themes.css";
+
+import ApplicationRout from "./router/ApplicationRout";
+import { ThemeProvider } from "./context/ThemeContext";
 
 function App() {
   return (
-    <div className="App">
-      <ApplicationRout />
-    </div>
+    <ThemeProvider>
+      <div className="App">
+        <ApplicationRout />
+      </div>
+    </ThemeProvider>
   );
 }
 

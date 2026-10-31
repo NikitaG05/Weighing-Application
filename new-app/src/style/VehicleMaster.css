@@ -1,0 +1,405 @@
+
+/* =========================================
+   VEHICLE MASTER - MAIN CONTAINER
+========================================= */
+
+.vehicle-master {
+  width: 100%;
+  min-width: 0;
+  padding: 24px;
+  background: var(--surface, #ffffff);
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 16px;
+  color: var(--text-primary, #0f172a);
+  box-sizing: border-box;
+}
+
+/* =========================================
+   HEADER
+========================================= */
+
+.vehicle-master-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.vehicle-master-header h2 {
+  margin: 0 0 6px;
+  font-size: 23px;
+  font-weight: 700;
+  color: var(--text-primary, #0f172a);
+}
+
+.vehicle-master-header p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-secondary, #64748b);
+}
+
+/* =========================================
+   BUTTONS
+========================================= */
+
+.vehicle-primary-btn,
+.vehicle-secondary-btn,
+.vehicle-edit-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 9px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.vehicle-primary-btn {
+  background: var(--primary, #2563eb);
+  border: 1px solid var(--primary, #2563eb);
+  color: #ffffff;
+}
+
+.vehicle-primary-btn:hover:not(:disabled) {
+  background: var(--primary-hover, #1d4ed8);
+}
+
+.vehicle-secondary-btn {
+  background: var(--surface, #ffffff);
+  border: 1px solid var(--border-color, #e2e8f0);
+  color: var(--text-primary, #0f172a);
+}
+
+.vehicle-secondary-btn:hover:not(:disabled) {
+  background: var(--primary-light, #eff6ff);
+  border-color: var(--primary, #2563eb);
+}
+
+.vehicle-edit-btn {
+  padding: 7px 14px;
+  background: var(--primary-light, #eff6ff);
+  border: 1px solid var(--primary, #2563eb);
+  color: var(--primary, #2563eb);
+}
+
+.vehicle-edit-btn:hover {
+  background: var(--primary, #2563eb);
+  color: #ffffff;
+}
+
+.vehicle-primary-btn:disabled,
+.vehicle-secondary-btn:disabled,
+.vehicle-edit-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* =========================================
+   SUCCESS AND ERROR MESSAGES
+========================================= */
+
+.vehicle-success,
+.vehicle-error {
+  padding: 12px 16px;
+  margin: 0 0 18px;
+  border-radius: 9px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.vehicle-success {
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #047857;
+}
+
+.vehicle-error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+}
+
+/* =========================================
+   FILTERS
+========================================= */
+
+.vehicle-filters {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.vehicle-filters input,
+.vehicle-filters select {
+  min-height: 42px;
+  padding: 10px 12px;
+  background: var(--surface, #ffffff);
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 9px;
+  color: var(--text-primary, #0f172a);
+  font-size: 14px;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.vehicle-filters input {
+  flex: 1 1 250px;
+  min-width: 180px;
+}
+
+.vehicle-filters select {
+  flex: 0 1 220px;
+  min-width: 160px;
+}
+
+.vehicle-filters input:focus,
+.vehicle-filters select:focus,
+.vehicle-form input:focus,
+.vehicle-form select:focus {
+  outline: none;
+  border-color: var(--primary, #2563eb);
+  box-shadow: 0 0 0 3px
+    color-mix(
+      in srgb,
+      var(--primary, #2563eb) 12%,
+      transparent
+    );
+}
+
+/* =========================================
+   VEHICLE TABLE
+========================================= */
+
+.vehicle-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 12px;
+}
+
+.vehicle-table {
+  width: 100%;
+  min-width: 650px;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 14px;
+}
+
+.vehicle-table thead {
+  background: var(--primary-light, #eff6ff);
+}
+
+.vehicle-table th {
+  padding: 15px 16px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-secondary, #64748b);
+  white-space: nowrap;
+}
+
+.vehicle-table td {
+  padding: 14px 16px;
+  border-top: 1px solid var(--border-color, #e2e8f0);
+  color: var(--text-primary, #0f172a);
+  vertical-align: middle;
+}
+
+.vehicle-table tbody tr:hover {
+  background: var(--primary-light, #eff6ff);
+}
+
+.vehicle-table td:first-child {
+  font-weight: 600;
+}
+
+/* =========================================
+   PAGINATION
+========================================= */
+
+.vehicle-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding-top: 20px;
+  font-size: 13px;
+  color: var(--text-secondary, #64748b);
+}
+
+.vehicle-pagination-controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.vehicle-pagination-controls select,
+.vehicle-pagination-controls button {
+  padding: 8px 12px;
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 8px;
+  background: var(--surface, #ffffff);
+  color: var(--text-primary, #0f172a);
+  font-family: inherit;
+  font-size: 13px;
+}
+
+.vehicle-pagination-controls button {
+  cursor: pointer;
+}
+
+.vehicle-pagination-controls button:hover:not(:disabled) {
+  background: var(--primary-light, #eff6ff);
+}
+
+.vehicle-pagination-controls button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* =========================================
+   ADD / EDIT FORM
+========================================= */
+
+.vehicle-form {
+  padding: 24px;
+  background: var(--background, #f8fafc);
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 12px;
+}
+
+.vehicle-form h3 {
+  margin: 0 0 10px;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary, #0f172a);
+}
+
+.vehicle-form-hint {
+  margin: 0 0 20px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-secondary, #64748b);
+}
+
+.vehicle-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.vehicle-form-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary, #0f172a);
+}
+
+.vehicle-form-grid input,
+.vehicle-form-grid select {
+  width: 100%;
+  min-height: 44px;
+  padding: 11px 13px;
+  background: var(--surface, #ffffff);
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 9px;
+  color: var(--text-primary, #0f172a);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 400;
+  box-sizing: border-box;
+}
+
+.vehicle-form-grid input:read-only {
+  background: var(--background, #f8fafc);
+  color: var(--text-secondary, #64748b);
+  cursor: default;
+}
+
+.vehicle-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border-color, #e2e8f0);
+}
+
+/* =========================================
+   RESPONSIVE DESIGN
+========================================= */
+
+@media (max-width: 768px) {
+  .vehicle-master {
+    padding: 16px;
+    border-radius: 12px;
+  }
+
+  .vehicle-master-header {
+    align-items: stretch;
+  }
+
+  .vehicle-master-header h2 {
+    font-size: 20px;
+  }
+
+  .vehicle-filters input,
+  .vehicle-filters select {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+
+  .vehicle-form {
+    padding: 16px;
+  }
+
+  .vehicle-form-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .vehicle-pagination {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .vehicle-pagination-controls {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .vehicle-master-header .vehicle-primary-btn {
+    width: 100%;
+  }
+
+  .vehicle-filters .vehicle-secondary-btn {
+    flex: 1;
+  }
+
+  .vehicle-form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .vehicle-form-actions button {
+    width: 100%;
+  }
+
+  .vehicle-pagination-controls {
+    gap: 8px;
+  }
+}

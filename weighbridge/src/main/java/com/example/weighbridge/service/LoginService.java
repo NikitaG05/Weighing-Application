@@ -77,7 +77,7 @@ public class LoginService {
             }
 
         Instant now = Instant.now();
-        long expiresIn = 900; // 15 minutes
+        long expiresIn = 8 * 60 * 60; // 8 hours = 28800 seconds
 
         JwtClaimsSet claims = JwtClaimsSet.builder()
             .issuer(issuer)

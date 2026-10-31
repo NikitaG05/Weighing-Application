@@ -1,0 +1,270 @@
+
+.um-page {
+  padding: 24px;
+  color: #172b4d;
+  background: #f5f8fc;
+  min-height: 100%;
+}
+
+.um-header,
+.um-section-heading,
+.um-form-actions,
+.um-row-actions,
+.um-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.um-header {
+  margin-bottom: 24px;
+}
+
+.um-header h2 {
+  font-size: 26px;
+  margin: 0 0 6px;
+  font-weight: 700;
+}
+
+.um-header p {
+  margin: 0;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.um-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 24px;
+  margin-bottom: 22px;
+  box-shadow: 0 3px 14px rgba(15, 23, 42, 0.04);
+}
+
+.um-section-heading {
+  margin-bottom: 20px;
+}
+
+.um-section-heading h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.um-count {
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.um-form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.um-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.um-field input,
+.um-field select,
+.um-toolbar input,
+.um-toolbar select {
+  width: 100%;
+  padding: 11px 13px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #172b4d;
+  font-size: 14px;
+  box-sizing: border-box;
+  outline: none;
+}
+
+.um-field input:focus,
+.um-field select:focus,
+.um-toolbar input:focus,
+.um-toolbar select:focus {
+  border-color: #0891b2;
+  box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.12);
+}
+
+.um-form-actions {
+  justify-content: flex-start;
+  margin-top: 22px;
+}
+
+.um-button {
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.um-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.um-button-primary {
+  background: #0891b2;
+  color: #ffffff;
+}
+
+.um-button-primary:hover:not(:disabled) {
+  background: #0e7490;
+}
+
+.um-button-secondary {
+  background: #e2e8f0;
+  color: #334155;
+}
+
+.um-button-secondary:hover:not(:disabled) {
+  background: #cbd5e1;
+}
+
+.um-toolbar {
+  justify-content: flex-start;
+  margin-bottom: 18px;
+}
+
+.um-toolbar input {
+  max-width: 340px;
+}
+
+.um-toolbar select {
+  max-width: 180px;
+}
+
+.um-table-wrapper {
+  overflow-x: auto;
+}
+
+.um-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 14px;
+}
+
+.um-table th {
+  padding: 13px 14px;
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.um-table td {
+  padding: 14px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.um-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+.um-status {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.um-status-active {
+  color: #166534;
+  background: #dcfce7;
+}
+
+.um-status-inactive {
+  color: #991b1b;
+  background: #fee2e2;
+}
+
+.um-row-actions {
+  justify-content: flex-start;
+  gap: 8px;
+}
+
+.um-button-edit {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.um-button-edit:hover {
+  background: #bfdbfe;
+}
+
+.um-button-delete {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.um-button-delete:hover:not(:disabled) {
+  background: #fecaca;
+}
+
+.um-empty {
+  text-align: center;
+  color: #64748b;
+  padding: 30px !important;
+}
+
+.um-alert {
+  padding: 12px 16px;
+  margin-bottom: 18px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.um-alert-error {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+.um-alert-success {
+  background: #f0fdf4;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+@media (max-width: 768px) {
+  .um-page {
+    padding: 14px;
+  }
+
+  .um-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .um-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .um-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .um-toolbar input,
+  .um-toolbar select {
+    max-width: none;
+  }
+
+  .um-card {
+    padding: 16px;
+  }
+}

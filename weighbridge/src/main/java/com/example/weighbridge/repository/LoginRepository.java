@@ -9,4 +9,6 @@ public interface LoginRepository
         extends JpaRepository<AdminLogin, Long> {
 
     Optional<AdminLogin> findByUsername(String username);
+
+    boolean existsByRole(String role);
 }

@@ -1,4 +1,15 @@
-# React
+# Docker and project backups
+**/.npm-cache/
+**/*backup*/
+**/*.backup
+**/*.save
+
+# Local configuration
+**/application-local.yml
+**/application-prod.yml
+
+# Temporary files
+**/project-structure.txt# React
 **/node_modules/
 **/dist/
 **/build/
@@ -24,3 +35,9 @@
 
 # Logs
 *.log
+
+# Temporary project files
+**/project-structure.txt
+
+# Accidental terminal output
+/ubprocess

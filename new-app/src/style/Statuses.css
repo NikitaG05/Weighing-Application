@@ -1,0 +1,68 @@
+/* Status Master — uses the application's shared design tokens */
+.statuses-page {
+  --statuses-primary: var(--primary, #2563eb);
+  --statuses-primary-hover: var(--primary-hover, #1d4ed8);
+  --statuses-bg: var(--surface, #fff);
+  --statuses-text: var(--text-primary, #1e293b);
+  --statuses-muted: var(--text-secondary, #64748b);
+  --statuses-border: var(--border-color, #e2e8f0);
+  width: 100%; min-width: 0; color: var(--statuses-text);
+}
+.statuses-page *, .statuses-page *::before, .statuses-page *::after { box-sizing: border-box; }
+.statuses-header { margin-bottom: 22px; }
+.statuses-header h2 { margin: 0 0 6px; font-size: 24px; font-weight: 700; color: var(--statuses-text); }
+.statuses-header p { margin: 0; font-size: 14px; color: var(--statuses-muted); }
+.statuses-form, .statuses-list { background: var(--statuses-bg); border: 1px solid var(--statuses-border); border-radius: 12px; }
+.statuses-form { padding: 24px; margin-bottom: 24px; }
+.statuses-form-heading { margin-bottom: 20px; }
+.statuses-form-heading h3, .statuses-list-header h3 { margin: 0 0 5px; font-size: 17px; font-weight: 650; color: var(--statuses-text); }
+.statuses-form-heading p, .statuses-list-header p { margin: 0; font-size: 13px; color: var(--statuses-muted); }
+.statuses-form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.statuses-field { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.statuses-field label { font-size: 13px; font-weight: 600; color: var(--statuses-text); }
+.statuses-field label span { color: #dc2626; }
+.statuses-field input { width: 100%; min-height: 42px; padding: 10px 12px; border: 1px solid var(--statuses-border); border-radius: 8px; font: inherit; font-size: 14px; color: var(--statuses-text); background: var(--statuses-bg); transition: border-color .18s, box-shadow .18s; }
+.statuses-field input::placeholder { color: var(--statuses-muted); opacity: .8; }
+.statuses-field input:focus-visible { outline: none; border-color: var(--statuses-primary); box-shadow: 0 0 0 3px var(--primary-light, rgba(37,99,235,.12)); }
+.statuses-field input:disabled { opacity: .6; cursor: not-allowed; }
+.statuses-form-footer { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-top: 22px; flex-wrap: wrap; }
+.statuses-checkbox { display: inline-flex; align-items: center; gap: 9px; font-size: 14px; font-weight: 500; cursor: pointer; color: var(--statuses-text); }
+.statuses-checkbox input { width: 16px; height: 16px; accent-color: var(--statuses-primary); }
+.statuses-form-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.statuses-page .statuses-save-button, .statuses-page .statuses-cancel-button, .statuses-page .statuses-refresh-button { min-height: 40px; padding: 9px 16px; border-radius: 8px; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; transition: background-color .18s, border-color .18s, transform .18s; }
+.statuses-page .statuses-save-button { color: #fff; background: var(--statuses-primary); border: 1px solid var(--statuses-primary); }
+.statuses-page .statuses-save-button:hover:not(:disabled) { background: var(--statuses-primary-hover); }
+.statuses-page .statuses-cancel-button { color: var(--statuses-text); background: transparent; border: 1px solid var(--statuses-border); }
+.statuses-page .statuses-cancel-button:hover:not(:disabled) { background: var(--primary-light, rgba(37,99,235,.08)); }
+/* Explicit specificity avoids global and module-wide button overrides. */
+.statuses-page button.statuses-refresh-button { color: var(--statuses-primary); background: var(--statuses-bg); border: 1px solid var(--statuses-border); }
+.statuses-page button.statuses-refresh-button:hover:not(:disabled) { border-color: var(--statuses-primary); background: var(--primary-light, rgba(37,99,235,.08)); }
+.statuses-page button:disabled { opacity: .55; cursor: not-allowed; }
+.statuses-page button:focus-visible { outline: 2px solid var(--statuses-primary); outline-offset: 2px; }
+.statuses-error, .statuses-success { margin: 0 0 18px; padding: 12px 14px; border-radius: 8px; font-size: 14px; }
+.statuses-error { color: #b91c1c; background: #fef2f2; }
+.statuses-success { color: #166534; background: #f0fdf4; }
+.statuses-list { padding: 20px 22px 12px; }
+.statuses-list-header { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 18px; }
+.statuses-table-wrapper { width: 100%; overflow-x: auto; }
+.statuses-table { width: 100%; border-collapse: collapse; text-align: left; }
+.statuses-table th { background: var(--background, #f8fafc); color: var(--statuses-muted); font-size: 12px; font-weight: 700; letter-spacing: .03em; white-space: nowrap; }
+.statuses-table th, .statuses-table td { padding: 13px 15px; border-bottom: 1px solid var(--statuses-border); }
+.statuses-table td { font-size: 14px; color: var(--statuses-text); }
+.statuses-table tbody tr:hover { background: var(--primary-light, rgba(37,99,235,.04)); }
+.statuses-table tbody tr:last-child td { border-bottom: none; }
+.statuses-code { font-weight: 600; letter-spacing: .015em; }
+.statuses-empty { text-align: center; padding: 32px 15px !important; color: var(--statuses-muted) !important; }
+.statuses-badge { display: inline-flex; align-items: center; border-radius: 999px; padding: 5px 10px; font-size: 12px; font-weight: 650; }
+.statuses-badge.enabled { color: #166534; background: #dcfce7; }
+.statuses-badge.disabled { color: #991b1b; background: #fee2e2; }
+.statuses-page .common-action-buttons { display: inline-flex; align-items: center; gap: 10px; }
+.statuses-page .common-action-buttons button.common-action-icon { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; min-width: 32px; padding: 0; margin: 0; border: 0; border-radius: 7px; background: transparent; box-shadow: none; cursor: pointer; }
+.statuses-page .common-action-buttons button.action-edit { color: var(--statuses-primary); }
+.statuses-page .common-action-buttons button.action-delete { color: #dc2626; }
+.statuses-page .common-action-buttons button.action-edit:hover:not(:disabled) { background: var(--primary-light, rgba(37,99,235,.1)); }
+.statuses-page .common-action-buttons button.action-delete:hover:not(:disabled) { background: #fef2f2; }
+.statuses-page .common-action-buttons button.common-action-icon:disabled { color: var(--statuses-muted); opacity: .4; background: transparent; cursor: not-allowed; }
+@media (max-width: 700px) { .statuses-form-grid { grid-template-columns: 1fr; } .statuses-form { padding: 18px; } .statuses-list { padding: 16px 12px 10px; } .statuses-header h2 { font-size: 21px; } .statuses-list-header { align-items: flex-start; } }
+@media (max-width: 440px) { .statuses-form-footer { align-items: stretch; flex-direction: column; } .statuses-form-actions { width: 100%; } .statuses-form-actions button { flex: 1; } }
+@media (prefers-reduced-motion: reduce) { .statuses-page button, .statuses-field input { transition: none; } }

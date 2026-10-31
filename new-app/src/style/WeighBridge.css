@@ -1,0 +1,116 @@
+/* Precision Weighing Systems | Theme-aware Weighbridge Master */
+.weighbridge-master {
+  --wb-primary: var(--primary, #2563eb);
+  --wb-hover: var(--primary-hover, #1d4ed8);
+  --wb-light: var(--primary-light, #eff6ff);
+  --wb-text: var(--text-primary, #0f172a);
+  --wb-muted: var(--text-secondary, #64748b);
+  --wb-border: var(--border-color, #e2e8f0);
+  --wb-surface: var(--surface, #ffffff);
+  --wb-bg: var(--background, #f8fafc);
+  width: 100%; min-width: 0; padding: 4px 0 14px;
+  color: var(--wb-text); font-family: inherit;
+}
+.weighbridge-master *, .weighbridge-master *::before, .weighbridge-master *::after { box-sizing: border-box; }
+
+/* Heading */
+.weighbridge-heading { margin-bottom: 24px; }
+.weighbridge-eyebrow { display: block; margin-bottom: 8px; color: var(--wb-primary); font-size: 10px; font-weight: 750; letter-spacing: 1.4px; }
+.weighbridge-heading h3 { margin: 0 0 7px; color: var(--wb-text); font-size: clamp(21px, 2.5vw, 25px); font-weight: 750; letter-spacing: -.5px; }
+.weighbridge-heading p { margin: 0; color: var(--wb-muted); font-size: 13px; line-height: 1.6; }
+
+/* Feedback */
+.weighbridge-error, .weighbridge-success { padding: 13px 16px; margin-bottom: 18px; border-radius: 9px; font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; }
+.weighbridge-error { background: #fff1f2; color: #b42318; border-left: 3px solid #e11d48; }
+.weighbridge-success { background: #ecfdf3; color: #027a48; border-left: 3px solid #16a34a; }
+
+/* Form + table + details surfaces */
+.weighbridge-form, .weighbridge-list, .weighbridge-details {
+  min-width: 0; padding: 24px; background: var(--wb-surface);
+  border: 1px solid var(--wb-border); border-radius: 12px;
+  box-shadow: 0 3px 14px rgba(15, 23, 42, .025);
+}
+.weighbridge-form { margin-bottom: 24px; }
+.weighbridge-form h4, .weighbridge-list-header h4 { margin: 0; color: var(--wb-text); font-size: 17px; font-weight: 700; letter-spacing: -.2px; }
+.weighbridge-form h4 { margin-bottom: 22px; }
+.weighbridge-form-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.weighbridge-field { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.weighbridge-field label { color: var(--wb-text); font-size: 12px; font-weight: 650; }
+.weighbridge-field input, .weighbridge-field select {
+  display: block; width: 100%; min-width: 0; min-height: 44px;
+  padding: 10px 13px; border: 1px solid var(--wb-border);
+  border-radius: 8px; outline: none;
+  background: var(--wb-surface); color: var(--wb-text);
+  font: inherit; font-size: 13px;
+  transition: border-color .2s ease, box-shadow .2s ease, background-color .2s ease;
+}
+.weighbridge-field input::placeholder { color: var(--wb-muted); opacity: .7; }
+.weighbridge-field input:hover:not(:disabled):not([readonly]), .weighbridge-field select:hover:not(:disabled) { border-color: var(--wb-primary); }
+.weighbridge-field input:focus-visible, .weighbridge-field select:focus-visible {
+  border-color: var(--wb-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--wb-primary) 12%, transparent);
+}
+.weighbridge-field input[readonly] { background: var(--wb-bg); color: var(--wb-muted); cursor: default; }
+.weighbridge-field select { cursor: pointer; }
+.weighbridge-form-note { display: flex; align-items: center; gap: 9px; margin: 18px 0 0; color: var(--wb-muted); font-size: 12px; line-height: 1.5; }
+.weighbridge-note-icon { display: inline-flex; justify-content: center; align-items: center; flex: 0 0 18px; width: 18px; height: 18px; border-radius: 50%; background: var(--wb-light); color: var(--wb-primary); font-size: 11px; font-weight: 800; }
+
+/* Buttons */
+.weighbridge-form-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 24px; }
+.weighbridge-primary-button, .weighbridge-secondary-button {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 41px; padding: 10px 18px; border-radius: 8px;
+  font: inherit; font-size: 13px; font-weight: 650; cursor: pointer;
+  transition: background-color .2s ease, border-color .2s ease, color .2s ease, transform .2s ease, box-shadow .2s ease;
+}
+.weighbridge-primary-button { background: var(--wb-primary); border: 1px solid var(--wb-primary); color: #fff; }
+.weighbridge-primary-button:hover:not(:disabled) { background: var(--wb-hover); border-color: var(--wb-hover); transform: translateY(-1px); box-shadow: 0 5px 15px color-mix(in srgb, var(--wb-primary) 18%, transparent); }
+.weighbridge-secondary-button { background: var(--wb-surface); border: 1px solid var(--wb-border); color: var(--wb-text); }
+.weighbridge-secondary-button:hover:not(:disabled) { background: var(--wb-light); border-color: var(--wb-primary); color: var(--wb-primary); }
+.weighbridge-primary-button:disabled, .weighbridge-secondary-button:disabled { opacity: .55; cursor: not-allowed; }
+.weighbridge-master button:focus-visible { outline: 2px solid var(--wb-primary); outline-offset: 3px; }
+
+/* Registered records */
+.weighbridge-list-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; }
+.weighbridge-list-heading { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+.weighbridge-count { padding: 5px 9px; background: var(--wb-light); color: var(--wb-primary); border-radius: 999px; font-size: 11px; font-weight: 650; }
+.weighbridge-loading { padding: 22px 0; color: var(--wb-muted); font-size: 13px; }
+.weighbridge-table-wrapper { width: 100%; max-width: 100%; overflow-x: auto; border: 1px solid var(--wb-border); border-radius: 9px; }
+.weighbridge-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; }
+.weighbridge-table thead { background: var(--wb-bg); }
+.weighbridge-table th { padding: 14px 15px; color: var(--wb-muted); font-size: 11px; font-weight: 750; letter-spacing: .3px; white-space: nowrap; }
+.weighbridge-table td { padding: 14px 15px; border-top: 1px solid var(--wb-border); color: var(--wb-text); vertical-align: middle; overflow-wrap: anywhere; }
+.weighbridge-table tbody tr { transition: background-color .18s ease; }
+.weighbridge-table tbody tr:hover { background: color-mix(in srgb, var(--wb-primary) 4%, var(--wb-surface)); }
+.weighbridge-name-cell { font-weight: 650; }
+.weighbridge-trip-count { display: inline-block; min-width: 30px; padding: 5px 9px; text-align: center; border-radius: 6px; background: var(--wb-light); color: var(--wb-primary); font-weight: 700; }
+.weighbridge-empty { padding: 36px 20px !important; text-align: center; color: var(--wb-muted) !important; }
+.weighbridge-row-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.weighbridge-row-actions button { padding: 7px 11px; border: 0; border-radius: 6px; background: var(--wb-light); color: var(--wb-primary); font-size: 12px; font-weight: 650; cursor: pointer; transition: background-color .2s ease; }
+.weighbridge-row-actions button:hover { background: color-mix(in srgb, var(--wb-primary) 15%, var(--wb-surface)); }
+.weighbridge-row-actions .weighbridge-delete-button { background: #fff1f2; color: #dc2626; }
+.weighbridge-row-actions .weighbridge-delete-button:hover { background: #ffe4e6; }
+
+/* Details */
+.weighbridge-details { margin-top: 24px; }
+.weighbridge-details-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.weighbridge-details-grid p { display: flex; flex-direction: column; gap: 6px; min-width: 0; margin: 0; padding: 14px 16px; background: var(--wb-bg); border-radius: 8px; color: var(--wb-text); font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; }
+.weighbridge-details-grid strong { color: var(--wb-muted); font-size: 11px; font-weight: 700; }
+
+/* Responsive */
+@media (max-width: 1100px) { .weighbridge-form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 768px) {
+  .weighbridge-form, .weighbridge-list, .weighbridge-details { padding: 18px; }
+  .weighbridge-form-grid { grid-template-columns: 1fr; gap: 16px; }
+  .weighbridge-details-grid { grid-template-columns: 1fr; }
+  .weighbridge-table { min-width: 740px; }
+}
+@media (max-width: 480px) {
+  .weighbridge-form, .weighbridge-list, .weighbridge-details { padding: 15px; }
+  .weighbridge-form-actions { flex-direction: column; align-items: stretch; }
+  .weighbridge-form-actions .weighbridge-primary-button, .weighbridge-form-actions .weighbridge-secondary-button { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .weighbridge-master button, .weighbridge-field input, .weighbridge-field select, .weighbridge-table tbody tr { transition: none; }
+  .weighbridge-primary-button:hover:not(:disabled) { transform: none; }
+}

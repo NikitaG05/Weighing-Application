@@ -1,0 +1,46 @@
+
+/* Default - Ocean Blue */
+:root,
+[data-theme="ocean"] {
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --primary-light: #eff6ff;
+  --sidebar-bg: #1e3a8a;
+  --background: #f8fafc;
+  --surface: #ffffff;
+  --text-primary: #0f172a;
+  --text-secondary: #64748b;
+  --border-color: #e2e8f0;
+}
+
+/* Navy and Teal */
+[data-theme="teal"] {
+  --primary: #0d9488;
+  --primary-hover: #0f766e;
+  --primary-light: #f0fdfa;
+  --sidebar-bg: #134e4a;
+}
+
+/* Royal Purple */
+[data-theme="purple"] {
+  --primary: #7c3aed;
+  --primary-hover: #6d28d9;
+  --primary-light: #f5f3ff;
+  --sidebar-bg: #4c1d95;
+}
+
+/* Emerald Green */
+[data-theme="emerald"] {
+  --primary: #059669;
+  --primary-hover: #047857;
+  --primary-light: #ecfdf5;
+  --sidebar-bg: #064e3b;
+}
+
+/* Slate and Amber */
+[data-theme="amber"] {
+  --primary: #b45309;
+  --primary-hover: #92400e;
+  --primary-light: #fffbeb;
+  --sidebar-bg: #334155;
+}

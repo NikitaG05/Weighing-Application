@@ -1,0 +1,110 @@
+/* SITE MASTER — responsive and theme-aware */
+.sites-page {
+  --sites-primary: var(--primary, #2563eb);
+  --sites-hover: var(--primary-hover, #1d4ed8);
+  --sites-tint: var(--primary-light, #eff6ff);
+  --sites-text: var(--text-primary, #172b4d);
+  --sites-muted: var(--text-secondary, #64748b);
+  --sites-border: var(--border-color, #e2e8f0);
+  --sites-surface: var(--surface, #fff);
+  --sites-bg: var(--background, #f8fafc);
+  width: 100%; min-width: 0; padding: 4px 0 24px;
+  color: var(--sites-text); background: transparent; font-family: inherit;
+}
+.sites-page *, .sites-page *::before, .sites-page *::after { box-sizing: border-box; }
+.sites-heading { display: flex; align-items: center; gap: 14px; margin-bottom: 24px; }
+.sites-heading > div { flex: 1; min-width: 0; }
+.sites-heading-mark { display: grid; place-items: center; width: 48px; height: 48px; flex-shrink: 0; border-radius: 13px; background: var(--sites-tint); color: var(--sites-primary); font-size: 25px; }
+.sites-heading h2 { margin: 0 0 5px; font-size: clamp(21px, 2.5vw, 25px); font-weight: 750; letter-spacing: -.5px; color: var(--sites-text); }
+.sites-heading p { margin: 0; color: var(--sites-muted); font-size: 13px; }
+.sites-form, .sites-list { padding: 26px; margin-bottom: 22px; background: var(--sites-surface); border: 1px solid var(--sites-border); border-radius: 14px; box-shadow: 0 4px 20px rgba(15,23,42,.035); }
+.sites-form-title { margin-bottom: 22px; padding-bottom: 17px; border-bottom: 1px solid var(--sites-border); }
+.sites-eyebrow { display: block; margin-bottom: 6px; color: var(--sites-primary); font-size: 10px; font-weight: 750; letter-spacing: 1.5px; }
+.sites-form h3, .sites-list h3 { margin: 0; font-size: 18px; font-weight: 700; color: var(--sites-text); }
+.sites-form-title p { margin: 7px 0 0; color: var(--sites-muted); font-size: 13px; }
+.sites-page label { display: block; margin-bottom: 7px; color: var(--sites-text); font-size: 13px; font-weight: 600; }
+.sites-page input:not([type="radio"]), .sites-page select { width: 100%; min-width: 0; min-height: 44px; padding: 10px 13px; border: 1px solid var(--sites-border); border-radius: 9px; background: var(--sites-surface); color: var(--sites-text); font: inherit; font-size: 13px; outline: none; transition: border-color .2s ease, box-shadow .2s ease, background-color .2s ease; }
+.sites-page input::placeholder { color: var(--sites-muted); opacity: .75; }
+.sites-page input:hover:not(:disabled), .sites-page select:hover:not(:disabled) { border-color: var(--sites-primary); }
+.sites-page input:focus, .sites-page select:focus { border-color: var(--sites-primary); box-shadow: 0 0 0 3px color-mix(in srgb, var(--sites-primary) 14%, transparent); }
+.sites-page select { cursor: pointer; }
+.sites-section { margin-top: 24px; padding: 0; border: 0; background: transparent; }
+.sites-section h4 { margin: 0 0 9px; color: var(--sites-text); font-size: 13px; font-weight: 650; }
+.sites-new-details { margin-top: 15px; padding: 18px; border-radius: 11px; background: var(--sites-bg); }
+.sites-fields, .sites-address-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; align-items: start; }
+.sites-field { min-width: 0; }
+.sites-input-action { display: flex; gap: 8px; align-items: stretch; }
+.sites-input-action input { flex: 1 1 auto; min-width: 0; }
+.sites-page button { display: inline-flex; align-items: center; justify-content: center; min-height: 40px; padding: 9px 16px; border: 1px solid var(--sites-primary); border-radius: 9px; background: var(--sites-primary); color: #fff; font: inherit; font-size: 13px; font-weight: 650; cursor: pointer; white-space: nowrap; transition: background-color .2s ease, border-color .2s ease, color .2s ease, transform .2s ease, box-shadow .2s ease; }
+.sites-page button:hover:not(:disabled) { background: var(--sites-hover); border-color: var(--sites-hover); }
+.sites-page button:active:not(:disabled) { transform: translateY(1px); }
+.sites-page button:disabled { opacity: .55; cursor: not-allowed; }
+.sites-page button:focus-visible { outline: 2px solid var(--sites-primary); outline-offset: 3px; }
+.sites-page .sites-input-action button { flex-shrink: 0; padding-inline: 14px; }
+.sites-cancel-row { grid-column: 1 / -1; display: flex; justify-content: flex-end; margin-top: 2px; }
+.sites-page .sites-cancel-btn, .sites-page .sites-clear-button { background: transparent; color: var(--sites-text); border-color: var(--sites-border); }
+.sites-page .sites-cancel-btn:hover:not(:disabled), .sites-page .sites-clear-button:hover:not(:disabled) { background: var(--sites-tint); color: var(--sites-primary); border-color: var(--sites-primary); }
+.sites-city-results { max-height: 240px; overflow-y: auto; margin-top: 14px; border: 1px solid var(--sites-border); border-radius: 9px; background: var(--sites-surface); }
+.sites-city-results p { margin: 12px 14px; color: var(--sites-muted); font-size: 12px; }
+.sites-page .sites-city-result { display: flex; justify-content: flex-start; flex-wrap: wrap; gap: 6px; width: 100%; padding: 11px 14px; border: 0; border-top: 1px solid var(--sites-border); border-radius: 0; background: transparent; color: var(--sites-text); text-align: left; white-space: normal; font-weight: 400; }
+.sites-page .sites-city-result:hover:not(:disabled) { background: var(--sites-tint); color: var(--sites-primary); }
+.sites-city-result strong { color: var(--sites-primary); }
+.sites-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+.sites-list-heading { display: flex; justify-content: space-between; align-items: center; gap: 18px; margin-bottom: 20px; }
+.sites-record-title { display: flex; align-items: center; gap: 10px; }
+.sites-record-count { display: inline-grid; place-items: center; min-width: 28px; height: 25px; padding: 0 8px; border-radius: 20px; background: var(--sites-tint); color: var(--sites-primary); font-size: 12px; font-weight: 750; }
+.sites-list-heading input { max-width: 340px; }
+.sites-table-wrapper { width: 100%; overflow-x: auto; border-radius: 9px; }
+.sites-table-wrapper table { width: 100%; border-collapse: collapse; text-align: left; }
+.sites-table-wrapper th, .sites-table-wrapper td { padding: 14px 13px; border-bottom: 1px solid var(--sites-border); font-size: 13px; vertical-align: middle; }
+.sites-table-wrapper th { background: var(--sites-bg); color: var(--sites-muted); font-size: 11px; font-weight: 750; letter-spacing: .4px; white-space: nowrap; }
+.sites-table-wrapper td { color: var(--sites-text); }
+.sites-table-wrapper tbody tr:hover { background: var(--sites-tint); }
+.sites-table-wrapper tbody tr:last-child td { border-bottom: 0; }
+.sites-empty { padding: 32px !important; color: var(--sites-muted) !important; text-align: center; }
+.sites-pagination { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 13px; margin-top: 18px; color: var(--sites-muted); font-size: 13px; }
+.sites-page .sites-pagination button { background: var(--sites-surface); border-color: var(--sites-border); color: var(--sites-text); }
+.sites-page .sites-pagination button:hover:not(:disabled) { background: var(--sites-tint); color: var(--sites-primary); border-color: var(--sites-primary); }
+.sites-error, .sites-success { padding: 12px 15px; margin-bottom: 16px; border-radius: 9px; font-size: 13px; line-height: 1.5; }
+.sites-error { background: #fef2f2; color: #b42318; }
+.sites-success { background: #ecfdf3; color: #027a48; }
+/* Shared icon action buttons must override the module-wide button rule */
+.sites-page .common-action-buttons { display: inline-flex; align-items: center; gap: 8px; }
+.sites-page .common-action-buttons button.common-action-icon { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 32px; width: 32px; height: 32px; min-width: 32px; min-height: 32px; padding: 0; margin: 0; border: 0; border-radius: 7px; background: transparent; box-shadow: none; line-height: 1; }
+.sites-page .common-action-buttons button.common-action-icon svg { display: block; width: 18px; height: 18px; flex-shrink: 0; stroke: currentColor; }
+.sites-page .common-action-buttons button.action-view { color: var(--sites-muted); }
+.sites-page .common-action-buttons button.action-edit { color: var(--sites-primary); }
+.sites-page .common-action-buttons button.action-delete { color: #dc2626; }
+.sites-page .common-action-buttons button.action-view:hover:not(:disabled) { background: var(--sites-bg); }
+.sites-page .common-action-buttons button.action-edit:hover:not(:disabled) { background: var(--sites-tint); }
+.sites-page .common-action-buttons button.action-delete:hover:not(:disabled) { background: #fef2f2; }
+.sites-page .common-action-buttons button.common-action-icon:disabled { opacity: .5; cursor: not-allowed; }
+@media (max-width: 768px) { .sites-form, .sites-list { padding: 18px; } .sites-heading, .sites-list-heading { align-items: flex-start; flex-wrap: wrap; } .sites-fields, .sites-address-grid { grid-template-columns: 1fr; } .sites-list-heading input { max-width: none; } }
+@media (max-width: 480px) { .sites-form, .sites-list { padding: 15px; } .sites-heading-mark { width: 42px; height: 42px; } .sites-heading > button { margin-left: auto; } .sites-list-heading { flex-direction: column; align-items: stretch; } .sites-new-details { padding: 12px; } .sites-input-action { flex-wrap: wrap; } .sites-input-action input { flex-basis: 100%; } .sites-page .sites-input-action button { width: 100%; } .sites-actions button { flex: 1; } }
+@media (prefers-reduced-motion: reduce) { .sites-page button, .sites-page input, .sites-page select { transition: none; } }
+
+/* Consistent outlined Refresh control — higher specificity than .sites-page button */
+.sites-page .sites-heading button.sites-refresh-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  min-height: 44px;
+  padding: 10px 20px;
+  border: 1px solid var(--sites-border);
+  border-radius: 10px;
+  background: var(--sites-surface);
+  color: var(--sites-text);
+  font-size: 13px;
+  font-weight: 650;
+  box-shadow: none;
+}
+.sites-page .sites-heading button.sites-refresh-button:hover:not(:disabled) {
+  background: var(--sites-tint);
+  border-color: var(--sites-primary);
+  color: var(--sites-primary);
+}
+.sites-page .sites-heading button.sites-refresh-button:focus-visible {
+  outline: 2px solid var(--sites-primary);
+  outline-offset: 3px;
+}

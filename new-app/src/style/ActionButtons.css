@@ -1,0 +1,129 @@
+
+/* =========================================
+   COMMON ACTION BUTTONS
+========================================= */
+
+.common-action-buttons {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  white-space: nowrap;
+}
+
+/* =========================================
+   ICON BUTTON BASE STYLE
+========================================= */
+
+.common-action-buttons .common-action-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  min-height: 32px;
+
+  padding: 0;
+  margin: 0;
+
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  box-shadow: none;
+
+  cursor: pointer;
+
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.common-action-icon svg {
+  display: block;
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+}
+
+/* =========================================
+   VIEW ICON
+========================================= */
+
+.common-action-buttons .action-view {
+  color: #64748b;
+}
+
+.common-action-buttons .action-view:hover:not(:disabled) {
+  color: #334155;
+  background: #f1f5f9;
+}
+
+/* =========================================
+   EDIT ICON
+========================================= */
+
+.common-action-buttons .action-edit {
+  color: #2563eb;
+}
+
+.common-action-buttons .action-edit:hover:not(:disabled) {
+  color: #1d4ed8;
+  background: #eff6ff;
+}
+
+/* =========================================
+   DELETE ICON
+========================================= */
+
+.common-action-buttons .action-delete {
+  color: #dc2626;
+}
+
+.common-action-buttons .action-delete:hover:not(:disabled) {
+  color: #b91c1c;
+  background: #fef2f2;
+}
+
+/* =========================================
+   FOCUS & DISABLED STATES
+========================================= */
+
+.common-action-buttons .common-action-icon:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+.common-action-buttons .common-action-icon:disabled {
+  color: #cbd5e1;
+  background: transparent;
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 600px) {
+  .common-action-buttons {
+    gap: 8px;
+  }
+
+  .common-action-buttons .common-action-icon {
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
+    min-height: 30px;
+  }
+
+  .common-action-icon svg {
+    width: 17px;
+    height: 17px;
+  }
+}
+
+

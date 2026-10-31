@@ -2,7 +2,7 @@ import axios from "axios";
 
 const reportsApi = axios.create({
   baseURL:
-    process.env.REACT_APP_API_URL || "http://localhost:8081",
+    process.env.REACT_APP_API_URL || "",
   timeout: 30000,
 });
 
