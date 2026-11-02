@@ -1,5 +1,6 @@
-
-const BASE_URL = "";
+const BASE_URL = (
+  process.env.REACT_APP_API_URL || ""
+).replace(/\/+$/, "");
 
 // Get JWT token from existing login session
 const getAuthToken = () => {
