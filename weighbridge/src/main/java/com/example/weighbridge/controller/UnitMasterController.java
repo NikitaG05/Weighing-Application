@@ -49,19 +49,26 @@ public class UnitMasterController {
         );
     }
 
-    // Create unit - ADMIN only
-    @PostMapping("/api/admin/units")
+  @PostMapping("/api/admin/units")
     public ResponseEntity<UnitMasterResponseDTO> createUnit(
             @Valid @RequestBody UnitMasterRequestDTO request) {
 
+        System.out.println("========== CREATE UNIT API ==========");
+        System.out.println(">>> CREATE UNIT CONTROLLER HIT");
+        System.out.println("Unit Code: " + request.unitCode());
+        System.out.println("Unit Name: " + request.unitName());
+        System.out.println("Status ID: " + request.statusId());
+
         UnitMasterResponseDTO response =
                 unitMasterService.createUnit(request);
+
+        System.out.println(">>> UNIT CREATED SUCCESSFULLY");
+        System.out.println("=====================================");
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(response);
     }
-
     // Update unit - ADMIN only
     @PutMapping("/api/admin/units/{id}")
     public ResponseEntity<UnitMasterResponseDTO> updateUnit(
