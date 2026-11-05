@@ -14,6 +14,8 @@ public record WeighmentSyncResponseDTO(
 
     Integer sourceTransactionId,
 
+    Long sourceRevision,
+
     String ticketNo,
 
     String wbName,

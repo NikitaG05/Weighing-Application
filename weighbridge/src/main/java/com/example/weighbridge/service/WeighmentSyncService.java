@@ -301,6 +301,7 @@ public class WeighmentSyncService {
                 record.getId(),
                 record.getSiteId(),
                 record.getSourceTransactionId(),
+                record.getSourceRevision(),
                 record.getTicketNo(),
                 record.getWbName(),
                 record.getVehicleNo(),
@@ -320,4 +321,30 @@ public class WeighmentSyncService {
                 record.getSyncedAt()
         );
     }
+
+    @Transactional(readOnly = true)
+        public WeighmentSyncResponseDTO getBySourceTransactionForDesktop(
+                Long authorizedSiteId,
+                Integer sourceTransactionId) {
+
+        requireValidSiteId(authorizedSiteId);
+
+        if (sourceTransactionId == null || sourceTransactionId <= 0) {
+                throw badRequest("Invalid source transaction ID");
+        }
+
+        WeighmentRecord record = repository
+                .findBySiteIdAndSourceTransactionId(
+                        authorizedSiteId,
+                        sourceTransactionId
+                )
+                .orElseThrow(() ->
+                        new ResponseStatusException(
+                                HttpStatus.NOT_FOUND,
+                                "Cloud weighment transaction not found"
+                        )
+                );
+
+        return toResponse(record);
+        }
 }

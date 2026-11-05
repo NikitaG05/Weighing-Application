@@ -30,16 +30,32 @@ public class DesktopWeighmentSyncController {
     }
 
     @PostMapping
-    public ResponseEntity<WeighmentSyncResponseDTO> syncWeighment(
-            @Valid @RequestBody WeighmentSyncRequestDTO request,
-            Authentication authentication) {
+public ResponseEntity<WeighmentSyncResponseDTO> syncWeighment(
+        @Valid @RequestBody WeighmentSyncRequestDTO request,
+        Authentication authentication) {
 
-        Long authorizedSiteId =
-                validationService.validateAndGetSiteId(authentication);
+    Long authorizedSiteId =
+            validationService.validateAndGetSiteId(authentication);
 
-        WeighmentSyncResponseDTO response =
-                syncService.sync(request, authorizedSiteId);
+    WeighmentSyncResponseDTO response =
+            syncService.sync(request, authorizedSiteId);
 
-        return ResponseEntity.ok(response);
-    }
+    return ResponseEntity.ok(response);
+}
+        @GetMapping("/{sourceTransactionId}")
+        public ResponseEntity<WeighmentSyncResponseDTO> getWeighment(
+                @PathVariable Integer sourceTransactionId,
+                Authentication authentication) {
+
+                Long authorizedSiteId =
+                        validationService.validateAndGetSiteId(authentication);
+
+                WeighmentSyncResponseDTO response =
+                        syncService.getBySourceTransactionForDesktop(
+                                authorizedSiteId,
+                                sourceTransactionId
+                        );
+
+                return ResponseEntity.ok(response);
+        }
 }
