@@ -22,7 +22,7 @@ public class LocalReportsController {
         this.repository = repository;
     }
 
-    @GetMapping("/weighments")
+    @GetMapping("/local")
     public ResponseEntity<List<WeighmentRecord>> getCloudReports(
             @RequestParam Long siteId) {
 

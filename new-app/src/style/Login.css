@@ -1,6 +1,6 @@
 
 /* =========================================
-   PRECISION WEIGHING SYSTEMS
+   TAREX WEIGHING SYSTEMS
    THEME-AWARE LOGIN PAGE
 ========================================= */
 
@@ -580,4 +580,33 @@
   .login-brand-icon {
     transition: none;
   }
+}
+
+/* TareX brand refresh */
+.login-brand-icon { width: 76px; height: 76px; margin-bottom: 14px; border-radius: 20px; background: linear-gradient(135deg,#eaf2ff,#dbeafe); color: #1d4ed8; }
+.login-brand-icon svg { width: 52px; height: 52px; }
+.login-brand h1 { font-size: clamp(36px, 6vw, 44px); letter-spacing: -1.6px; font-weight: 850; }
+.login-brand h1 span { color: var(--login-primary); }
+.login-brand p { letter-spacing: 3.2px; }
+.login-panel { box-shadow: 0 24px 70px rgba(15,23,42,.1), 0 4px 14px rgba(15,23,42,.04); }
+.login-button { background: linear-gradient(110deg,#2563eb,#1647c8); border-color: #2563eb; }
+.login-button:hover:not(:disabled) { background: linear-gradient(110deg,#1d4ed8,#12399f); }
+
+.login-brand-icon {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 16px;
+  background: transparent;
+  border-radius: 0;
+}
+
+.tarex-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.login-brand h1 {
+  font-size: 38px;
+  letter-spacing: 1px;
 }

@@ -1,5 +1,7 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { getLocalReports } from "../api/reportsApi";
+
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import weighmentReportApi from "../api/weighmentReportApi";
+import { getSites } from "../api/sitesApi";
 import "../style/Report.css";
 
 const columns = [
@@ -18,9 +20,38 @@ const columns = [
   ["ShiftName", "Shift"],
 ];
 
+// Convert Spring Boot camelCase fields to table fields.
+const normalizeRecord = (record) => ({
+  TicketNo: record.ticketNo ?? record.TicketNo ?? "",
+  WBName: record.wbName ?? record.WBName ?? "",
+  VehicleNo: record.vehicleNo ?? record.VehicleNo ?? "",
+  PartyName: record.partyName ?? record.PartyName ?? "",
+  ProductName: record.productName ?? record.ProductName ?? "",
+  GrossWeight: record.grossWeight ?? record.GrossWeight ?? "",
+  TareWeight: record.tareWeight ?? record.TareWeight ?? "",
+  NetWeight: record.netWeight ?? record.NetWeight ?? "",
+  GrossDate: record.grossDate ?? record.GrossDate ?? "",
+  TareDate: record.tareDate ?? record.TareDate ?? "",
+  TicketDate: record.ticketDate ?? record.TicketDate ?? "",
+  OperatorName: record.operatorName ?? record.OperatorName ?? "",
+  ShiftName: record.shiftName ?? record.ShiftName ?? "",
+});
+
+// The admin dashboard may not pass accessToken as a prop.
+// Read the existing session as a fallback without exposing the token in the UI.
+function getSessionAccessToken() {
+  try {
+    const session = JSON.parse(
+      sessionStorage.getItem("weighbridgeSession") || "{}"
+    );
+    return session.accessToken || "";
+  } catch {
+    return "";
+  }
+}
+
 function Reports({ accessToken }) {
   const [records, setRecords] = useState([]);
-  const [fileErrors, setFileErrors] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -30,46 +61,136 @@ function Reports({ accessToken }) {
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(1);
 
+  const [sites, setSites] = useState([]);
+  const [selectedSiteId, setSelectedSiteId] = useState("");
+  const [sitesLoading, setSitesLoading] = useState(true);
+  const [sitesError, setSitesError] = useState("");
+  const requestId = useRef(0);
+  const token = accessToken || getSessionAccessToken();
+
+  // Load available weighbridge sites using the existing admin API.
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadSites() {
+      setSitesLoading(true);
+      setSitesError("");
+
+      try {
+        const data = await getSites(token);
+        const siteList = Array.isArray(data)
+          ? data
+          : Array.isArray(data?.content)
+            ? data.content
+            : Array.isArray(data?.data)
+              ? data.data
+              : [];
+
+        if (cancelled) return;
+
+        const validSites = siteList.filter(
+          (site) => site.id != null || site.siteId != null
+        );
+        setSites(validSites);
+        setSelectedSiteId((previous) => {
+          const exists = validSites.some(
+            (site) => String(site.id ?? site.siteId) === String(previous)
+          );
+          return exists
+            ? previous
+            : validSites.length
+              ? String(validSites[0].id ?? validSites[0].siteId)
+              : "";
+        });
+      } catch (err) {
+        if (!cancelled) {
+          setSites([]);
+          setSelectedSiteId("");
+          setSitesError(err.message || "Unable to load sites.");
+        }
+      } finally {
+        if (!cancelled) setSitesLoading(false);
+      }
+    }
+
+    if (token) {
+      loadSites();
+    } else {
+      setSites([]);
+      setSelectedSiteId("");
+      setSitesLoading(false);
+      setSitesError("Please log in again.");
+    }
+
+    return () => {
+      cancelled = true;
+    };
+  }, [token]);
+
+  // Load completed reports whenever the site changes or Refresh is clicked.
   const loadReports = useCallback(async () => {
+    const currentRequest = ++requestId.current;
+
+    if (!selectedSiteId) {
+      setRecords([]);
+      setError("");
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     setError("");
 
     try {
-      const data = await getLocalReports(accessToken);
-      setRecords(data.records);
-      setFileErrors(data.errors || []);
+      const data = await weighmentReportApi.getLocalReports(selectedSiteId);
+      if (currentRequest !== requestId.current) return;
+
+      setRecords(Array.isArray(data) ? data.map(normalizeRecord) : []);
       setPage(1);
     } catch (err) {
-      setError(err.message);
+      if (currentRequest !== requestId.current) return;
+      console.error("Failed to load reports:", err);
+      setRecords([]);
+      setError(err.message || "Unable to load reports.");
     } finally {
-      setLoading(false);
+      if (currentRequest === requestId.current) setLoading(false);
     }
-  }, [accessToken]);
+  }, [selectedSiteId]);
 
   useEffect(() => {
     loadReports();
+    return () => {
+      requestId.current += 1;
+    };
   }, [loadReports]);
 
-  const invalidDateRange =
-    fromDate && toDate && fromDate > toDate;
+  const invalidDateRange = Boolean(
+    fromDate && toDate && fromDate > toDate
+  );
 
+  // Search and date filtering.
   const filteredRecords = useMemo(() => {
-    const query = search.trim().toLowerCase();
-
-    if (fromDate && toDate && fromDate > toDate) {
+    if (invalidDateRange) {
       return [];
     }
+
+    const query = search.trim().toLowerCase();
 
     return records.filter((record) => {
       const matchesSearch =
         !query ||
         columns.some(([field]) =>
-          String(record[field] ?? "").toLowerCase().includes(query)
+          String(record[field] ?? "")
+            .toLowerCase()
+            .includes(query)
         );
 
-      // Desktop format: yyyy-MM-dd HH:mm:ss
-      const ticketDate = String(record.TicketDate ?? "").slice(0, 10);
-      const hasValidDate = /^\d{4}-\d{2}-\d{2}$/.test(ticketDate);
+      const ticketDate = String(
+        record.TicketDate ?? ""
+      ).slice(0, 10);
+
+      const hasValidDate =
+        /^\d{4}-\d{2}-\d{2}$/.test(ticketDate);
 
       const matchesDate =
         (!fromDate && !toDate) ||
@@ -79,8 +200,9 @@ function Reports({ accessToken }) {
 
       return matchesSearch && matchesDate;
     });
-  }, [records, search, fromDate, toDate]);
+  }, [records, search, fromDate, toDate, invalidDateRange]);
 
+  // Pagination.
   const totalPages = Math.max(
     1,
     Math.ceil(filteredRecords.length / pageSize)
@@ -88,26 +210,62 @@ function Reports({ accessToken }) {
 
   const currentPage = Math.min(page, totalPages);
   const startIndex = (currentPage - 1) * pageSize;
+
   const visibleRecords = filteredRecords.slice(
     startIndex,
     startIndex + pageSize
   );
 
-  function clearFilters() {
+  const clearFilters = () => {
     setSearch("");
     setFromDate("");
     setToDate("");
     setPage(1);
-  }
+  };
 
   return (
     <div className="reports">
       <h2>Weighment Reports</h2>
-      <p>JSON exports from the local desktop application.</p>
+
+      <p>
+        Completed weighment records synchronized from TareX Desktop.
+      </p>
+
+      <div className="reports-filter" style={{ maxWidth: 360, marginBottom: 20 }}>
+        <label htmlFor="report-site">Select Weighbridge Site</label>
+        <select
+          id="report-site"
+          value={selectedSiteId}
+          onChange={(event) => {
+            setSelectedSiteId(event.target.value);
+            setRecords([]);
+            setPage(1);
+          }}
+          disabled={sitesLoading || sites.length === 0}
+        >
+          {sites.length === 0 && (
+            <option value="">
+              {sitesLoading ? "Loading sites..." : "No sites available"}
+            </option>
+          )}
+          {sites.map((site) => {
+            const id = site.id ?? site.siteId;
+            return (
+              <option key={id} value={String(id)}>
+                {site.siteName ?? site.name ?? site.wbName ?? `Site ${id}`}
+              </option>
+            );
+          })}
+        </select>
+        {sitesError && <p role="alert">{sitesError}</p>}
+      </div>
 
       <div className="reports-filters">
         <div className="reports-filter">
-          <label htmlFor="report-search">Search records</label>
+          <label htmlFor="report-search">
+            Search records
+          </label>
+
           <input
             id="report-search"
             type="search"
@@ -121,7 +279,10 @@ function Reports({ accessToken }) {
         </div>
 
         <div className="reports-filter">
-          <label htmlFor="report-from">Ticket date from</label>
+          <label htmlFor="report-from">
+            Ticket date from
+          </label>
+
           <input
             id="report-from"
             type="date"
@@ -134,7 +295,10 @@ function Reports({ accessToken }) {
         </div>
 
         <div className="reports-filter">
-          <label htmlFor="report-to">Ticket date to</label>
+          <label htmlFor="report-to">
+            Ticket date to
+          </label>
+
           <input
             id="report-to"
             type="date"
@@ -158,7 +322,7 @@ function Reports({ accessToken }) {
           className="reports-refresh"
           type="button"
           onClick={loadReports}
-          disabled={loading}
+          disabled={loading || sitesLoading || !selectedSiteId}
         >
           {loading ? "Loading..." : "Refresh"}
         </button>
@@ -166,7 +330,9 @@ function Reports({ accessToken }) {
 
       {invalidDateRange && (
         <div className="reports-errors" role="alert">
-          <p>From date must be on or before To date.</p>
+          <p>
+            From date must be on or before To date.
+          </p>
         </div>
       )}
 
@@ -176,25 +342,19 @@ function Reports({ accessToken }) {
         </div>
       )}
 
-      {fileErrors.length > 0 && (
-        <details className="reports-errors">
-          <summary>
-            {fileErrors.length} file(s) could not be read
-          </summary>
-          {fileErrors.map((message, index) => (
-            <p key={index}>{message}</p>
-          ))}
-        </details>
-      )}
-
       <p role="status">
-        {filteredRecords.length} matching record(s) of {records.length}.
+        {loading
+          ? "Loading weighment reports..."
+          : `${filteredRecords.length} matching record(s) of ${records.length}.`}
       </p>
 
       {visibleRecords.length > 0 ? (
         <div className="reports-table-wrapper">
           <table className="reports-table">
-            <caption>Desktop weighment records</caption>
+            <caption>
+              Completed weighment records
+            </caption>
+
             <thead>
               <tr>
                 {columns.map(([field, label]) => (
@@ -210,7 +370,8 @@ function Reports({ accessToken }) {
                 <tr key={startIndex + index}>
                   {columns.map(([field]) => (
                     <td key={field}>
-                      {record[field] == null || record[field] === ""
+                      {record[field] == null ||
+                      record[field] === ""
                         ? "—"
                         : String(record[field])}
                     </td>
@@ -221,12 +382,18 @@ function Reports({ accessToken }) {
           </table>
         </div>
       ) : (
-        !loading && !error && <p>No matching records found.</p>
+        !loading &&
+        !error && (
+          <p>No matching records found.</p>
+        )
       )}
 
       <div className="reports-pagination">
         <div className="reports-page-size">
-          <label htmlFor="report-page-size">Rows per page</label>
+          <label htmlFor="report-page-size">
+            Rows per page
+          </label>
+
           <select
             id="report-page-size"
             value={pageSize}
@@ -260,7 +427,9 @@ function Reports({ accessToken }) {
             Previous
           </button>
 
-          <span>Page {currentPage} of {totalPages}</span>
+          <span>
+            Page {currentPage} of {totalPages}
+          </span>
 
           <button
             className="reports-secondary"

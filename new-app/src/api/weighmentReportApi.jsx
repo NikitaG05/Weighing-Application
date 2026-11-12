@@ -1,8 +1,7 @@
 
 import axios from "axios";
 
-const BASE_URL =
-  process.env.REACT_APP_API_URL || "";
+const BASE_URL = process.env.REACT_APP_API_URL || "";
 
 const weighmentApi = axios.create({
   baseURL: BASE_URL,
@@ -93,7 +92,7 @@ const handleError = (error) => {
 
   if (status === 404) {
     throw new Error(
-      "Requested weighment record not found."
+      "Requested API endpoint or weighment record not found."
     );
   }
 
@@ -103,6 +102,39 @@ const handleError = (error) => {
 };
 
 const weighmentReportApi = {
+
+  // ADMIN: Fetch completed, non-deleted reports
+  getLocalReports: async (siteId) => {
+    const id = validateSiteId(siteId);
+
+    try {
+      const session = getSession();
+
+      const role = String(session.role || "")
+        .replace(/^ROLE_/i, "")
+        .toUpperCase();
+
+      if (role !== "ADMIN") {
+        throw new Error(
+          "Only administrators can access local reports."
+        );
+      }
+
+      const response = await weighmentApi.get(
+        "/api/admin/reports/local",
+        {
+          params: { siteId: id },
+          headers: getHeaders(session),
+        }
+      );
+
+      return response.data;
+    } catch (error) {
+      handleError(error);
+    }
+  },
+
+  // Fetch all weighments for a site
   getAllBySite: async (siteId) => {
     const id = validateSiteId(siteId);
 
@@ -112,7 +144,9 @@ const weighmentReportApi = {
 
       const response = await weighmentApi.get(
         `${apiPath}/site/${id}`,
-        { headers: getHeaders(session) }
+        {
+          headers: getHeaders(session),
+        }
       );
 
       return response.data;
@@ -121,6 +155,7 @@ const weighmentReportApi = {
     }
   },
 
+  // Fetch completed weighments for a site
   getCompletedBySite: async (siteId) => {
     const id = validateSiteId(siteId);
 
@@ -130,7 +165,9 @@ const weighmentReportApi = {
 
       const response = await weighmentApi.get(
         `${apiPath}/site/${id}/completed`,
-        { headers: getHeaders(session) }
+        {
+          headers: getHeaders(session),
+        }
       );
 
       return response.data;
@@ -139,6 +176,7 @@ const weighmentReportApi = {
     }
   },
 
+  // Fetch a weighment by transaction ID
   getByTransaction: async (
     siteId,
     sourceTransactionId
@@ -159,7 +197,9 @@ const weighmentReportApi = {
 
       const response = await weighmentApi.get(
         `${apiPath}/site/${id}/transaction/${transactionId}`,
-        { headers: getHeaders(session) }
+        {
+          headers: getHeaders(session),
+        }
       );
 
       return response.data;

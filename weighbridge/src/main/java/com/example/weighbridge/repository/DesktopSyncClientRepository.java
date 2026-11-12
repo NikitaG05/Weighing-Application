@@ -32,4 +32,6 @@ public interface DesktopSyncClientRepository
     List<DesktopSyncClient> findBySiteIdAndEnabledTrue(
             Long siteId
     );
+
+    boolean existsBySiteId(Long siteId);
 }

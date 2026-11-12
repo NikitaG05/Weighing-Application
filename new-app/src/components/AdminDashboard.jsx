@@ -10,6 +10,7 @@ import Addresses from "./Masters/Addresses";
 import Sites from "./Masters/Sites";
 import WeighBridge from "../components/Masters/WeighBridge";
 import ThemeSelector from "./ThemeSelector";
+import SyncClientManagement from "./SyncClientManagement";
 import { getDashboardInsights } from "../api/dashboardApi";
 import { getSites } from "../api/sitesApi";
 
@@ -82,6 +83,7 @@ function DashboardIcon({ name, size = 20 }) {
     sites: <><path d="M3 10l9-7 9 7v10H3z" /><path d="M9 20v-7h6v7" /></>,
     check: <><circle cx="12" cy="12" r="9" /><path d="m8 12 3 3 5-6" /></>,
     pause: <><circle cx="12" cy="12" r="9" /><path d="M10 9v6M14 9v6" /></>,
+    key: <><circle cx="8" cy="15" r="4" /><path d="M11 12 21 2M17 6l3 3M15 8l3 3" /></>,
     shield: <><path d="M12 2 4 5v6c0 5 3.4 8.3 8 11 4.6-2.7 8-6 8-11V5z" /><path d="m9 12 2 2 4-4" /></>,
   };
 
@@ -193,6 +195,7 @@ function AdminDashboard({
     },
     { id: "report", label: "Reports", icon: "reports" },
     { id: "analytics", label: "Analytics", icon: "analytics" },
+    { id: "sync-clients", label: "API Keys & Sync", icon: "key" },
   ];
 
   const masterTabs = [
@@ -315,11 +318,11 @@ function AdminDashboard({
           <div className="admin-brand-identity">
             <img
               src={`${process.env.PUBLIC_URL}/favicon.ico`}
-              alt="Precision Weighing Systems logo"
+              alt="TareX Weighing Systems logo"
               className="admin-sidebar-logo"
             />
             <div className="admin-brand-text">
-              <strong>PRECISION</strong>
+              <strong>TareX</strong>
               <span>WEIGHING SYSTEMS</span>
             </div>
           </div>
@@ -760,8 +763,12 @@ function AdminDashboard({
               </div>
             )}
 
+            {activeTab === "sync-clients" && (
+              <SyncClientManagement accessToken={accessToken} />
+            )}
+
             {/* Reports */}
-            {activeTab === "report" && (
+           {activeTab === "report" && (
               <Reports accessToken={accessToken} />
             )}
           </section>
