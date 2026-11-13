@@ -158,6 +158,15 @@ public class SecurityConfig {
                                 "/api/sync/auth/login"
                         ).permitAll()
 
+                        // Public desktop activation and renewal
+                        // Each request must independently validate credentials
+                        // and enforce device/site authorization.
+                        .requestMatchers(
+                                HttpMethod.POST,
+                                "/api/activation/activate",
+                                "/api/activation/renew"
+                        ).permitAll()
+
                         // Desktop synchronization APIs
                         // Only DESKTOP_SYNC tokens can access these routes
                         .requestMatchers(
