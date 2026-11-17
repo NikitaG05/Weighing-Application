@@ -166,4 +166,23 @@ public class WeighmentSyncController {
                 )
         );
     }
+
+    @DeleteMapping("/site/{siteId}/transaction/{sourceTransactionId}")
+        public ResponseEntity<Void> deleteWeighment(
+                @PathVariable Long siteId,
+                @PathVariable Integer sourceTransactionId,
+                Authentication authentication) {
+
+        Long authorizedSiteId = requireAuthorizedSiteId(
+                siteId,
+                authentication
+        );
+
+        syncService.hideWeighment(
+                authorizedSiteId,
+                sourceTransactionId
+        );
+
+        return ResponseEntity.noContent().build();
+        }
 }

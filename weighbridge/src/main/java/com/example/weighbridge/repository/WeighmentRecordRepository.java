@@ -32,14 +32,14 @@ public interface WeighmentRecordRepository
     );
 
     List<WeighmentRecord>
-    findBySiteIdAndDeletedFalseOrderByTicketDateDesc(
-            Long siteId
-    );
+        findBySiteIdAndDeletedFalseAndCloudHiddenFalseOrderByTicketDateDesc(
+                Long siteId
+        );
 
-    List<WeighmentRecord>
-    findBySiteIdAndCompletedTrueAndDeletedFalseOrderByTicketDateDesc(
-            Long siteId
-    );
+   List<WeighmentRecord>
+        findBySiteIdAndCompletedTrueAndDeletedFalseAndCloudHiddenFalseOrderByTicketDateDesc(
+                Long siteId
+        );
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("""

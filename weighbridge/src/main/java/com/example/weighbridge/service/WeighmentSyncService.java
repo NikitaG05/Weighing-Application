@@ -143,7 +143,7 @@ public class WeighmentSyncService {
         requireValidSiteId(siteId);
 
         return repository
-                .findBySiteIdAndDeletedFalseOrderByTicketDateDesc(
+                .findBySiteIdAndDeletedFalseAndCloudHiddenFalseOrderByTicketDateDesc(
                         siteId
                 )
                 .stream()
@@ -158,7 +158,7 @@ public class WeighmentSyncService {
         requireValidSiteId(siteId);
 
         return repository
-                .findBySiteIdAndCompletedTrueAndDeletedFalseOrderByTicketDateDesc(
+                .findBySiteIdAndCompletedTrueAndDeletedFalseAndCloudHiddenFalseOrderByTicketDateDesc(
                         siteId
                 )
                 .stream()
@@ -183,7 +183,10 @@ public class WeighmentSyncService {
                         siteId,
                         sourceTransactionId
                 )
-                .filter(r -> !Boolean.TRUE.equals(r.getDeleted()))
+                .filter(r ->
+                        !Boolean.TRUE.equals(r.getDeleted())
+                        && !Boolean.TRUE.equals(r.getCloudHidden())
+                )
                 .orElseThrow(() ->
                         new ResponseStatusException(
                                 HttpStatus.NOT_FOUND,
@@ -193,6 +196,37 @@ public class WeighmentSyncService {
 
         return toResponse(record);
     }
+
+    @Transactional
+        public void hideWeighment(
+                Long siteId,
+                Integer sourceTransactionId) {
+
+        requireValidSiteId(siteId);
+
+        if (sourceTransactionId == null || sourceTransactionId <= 0) {
+                throw badRequest("Invalid transaction ID");
+        }
+
+        WeighmentRecord record = repository
+                .findForUpdate(siteId, sourceTransactionId)
+                .orElseThrow(() ->
+                        new ResponseStatusException(
+                                HttpStatus.NOT_FOUND,
+                                "Weighment transaction not found"
+                        )
+                );
+
+        if (Boolean.TRUE.equals(record.getCloudHidden())) {
+                throw new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Weighment transaction already hidden"
+                );
+        }
+
+        record.setCloudHidden(true);
+        repository.saveAndFlush(record);
+        }
 
     private void requireValidSiteId(Long siteId) {
         if (siteId == null || siteId <= 0) {
