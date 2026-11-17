@@ -32,7 +32,7 @@ public class LocalReportsController {
 
         List<WeighmentRecord> records =
                 repository
-                    .findBySiteIdAndCompletedTrueAndDeletedFalseOrderByTicketDateDesc(
+                    .findBySiteIdAndCompletedTrueAndDeletedFalseAndCloudHiddenFalseOrderByTicketDateDesc(
                         siteId
                     );
 
