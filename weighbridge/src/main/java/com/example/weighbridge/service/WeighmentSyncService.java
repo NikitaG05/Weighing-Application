@@ -4,6 +4,7 @@ package com.example.weighbridge.service;
 import com.example.weighbridge.dto.WeighmentSyncRequestDTO;
 import com.example.weighbridge.dto.WeighmentSyncResponseDTO;
 import com.example.weighbridge.model.WeighmentRecord;
+import com.example.weighbridge.repository.SiteRepository;
 import com.example.weighbridge.repository.WeighmentRecordRepository;
 
 import org.springframework.http.HttpStatus;
@@ -18,11 +19,15 @@ import java.util.List;
 public class WeighmentSyncService {
 
     private final WeighmentRecordRepository repository;
+        private final SiteRepository siteRepository;
 
-    public WeighmentSyncService(
-            WeighmentRecordRepository repository) {
+        public WeighmentSyncService(
+                WeighmentRecordRepository repository,
+                SiteRepository siteRepository) {
+
         this.repository = repository;
-    }
+        this.siteRepository = siteRepository;
+        }
 
     @Transactional
     public WeighmentSyncResponseDTO sync(
@@ -303,7 +308,7 @@ public class WeighmentSyncService {
                 record.getSourceTransactionId(),
                 record.getSourceRevision(),
                 record.getTicketNo(),
-                record.getWbName(),
+                resolveWeighbridgeName(record),
                 record.getVehicleNo(),
                 record.getPartyName(),
                 record.getProductName(),
@@ -346,5 +351,22 @@ public class WeighmentSyncService {
                 );
 
         return toResponse(record);
+        }
+
+        private String resolveWeighbridgeName(WeighmentRecord record) {
+
+        String wbName = record.getWbName();
+
+        if (wbName != null && !wbName.isBlank()) {
+                return wbName;
+        }
+
+        if (record.getSiteId() == null) {
+                return null;
+        }
+
+        return siteRepository.findById(record.getSiteId())
+                .map(site -> site.getSiteName())
+                .orElse(null);
         }
 }
