@@ -22,6 +22,15 @@ const columns = [
 
 // Convert Spring Boot camelCase fields to table fields.
 const normalizeRecord = (record) => ({
+    sourceTransactionId:
+    record.sourceTransactionId ??
+    record.SourceTransactionId ??
+    null,
+
+  siteId:
+    record.siteId ??
+    record.SiteId ??
+    null,
   TicketNo: record.ticketNo ?? record.TicketNo ?? "",
   WBName: record.wbName ?? record.WBName ?? "",
   VehicleNo: record.vehicleNo ?? record.VehicleNo ?? "",
@@ -60,7 +69,7 @@ function Reports({ accessToken }) {
   const [toDate, setToDate] = useState("");
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(1);
-
+  const [selectedRecord, setSelectedRecord] = useState(null);
   const [sites, setSites] = useState([]);
   const [selectedSiteId, setSelectedSiteId] = useState("");
   const [sitesLoading, setSitesLoading] = useState(true);
@@ -362,6 +371,7 @@ function Reports({ accessToken }) {
                     {label}
                   </th>
                 ))}
+                <th scope="col">Actions</th>
               </tr>
             </thead>
 
@@ -376,6 +386,24 @@ function Reports({ accessToken }) {
                         : String(record[field])}
                     </td>
                   ))}
+
+                  <td className="reports-actions">
+                      <button
+                        type="button"
+                        className="reports-view-btn"
+                        onClick={() => setSelectedRecord(record)}
+                      >
+                        View
+                      </button>
+
+                      <button
+                        type="button"
+                        className="reports-delete-btn"
+                        onClick={() => handleDelete(record)}
+                      >
+                        Delete
+                      </button>
+                    </td>
                 </tr>
               ))}
             </tbody>

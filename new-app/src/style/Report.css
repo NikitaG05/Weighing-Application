@@ -176,3 +176,34 @@
   outline: 2px solid #087f8c;
   outline-offset: 2px;
 }
+
+.reports-actions {
+  display: flex;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.reports-view-btn,
+.reports-delete-btn {
+  border: none;
+  border-radius: 6px;
+  padding: 7px 12px;
+  color: white;
+  cursor: pointer;
+}
+
+.reports-view-btn {
+  background: #2563eb;
+}
+
+.reports-delete-btn {
+  background: #dc2626;
+}
+
+.reports-view-btn:hover {
+  background: #1d4ed8;
+}
+
+.reports-delete-btn:hover {
+  background: #b91c1c;
+}
