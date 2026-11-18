@@ -225,6 +225,28 @@ function Reports({ accessToken }) {
     startIndex + pageSize
   );
 
+  const handleDelete = async (record) => {
+  const transactionId = record.sourceTransactionId;
+  const siteId = record.siteId ?? selectedSiteId;
+
+  if (!transactionId || !siteId) {
+    setError("Cannot delete: missing site or transaction ID.");
+    return;
+  }
+
+  const confirmed = window.confirm(
+    `Hide ticket ${record.TicketNo} from Cloud Reports?`
+  );
+
+  if (!confirmed) return;
+
+  // Backend DELETE testing is still pending.
+  // Do not send a DELETE request yet.
+  setError(
+    "Cloud DELETE is not enabled yet. Backend testing is pending."
+  );
+};
+
   const clearFilters = () => {
     setSearch("");
     setFromDate("");
@@ -468,8 +490,42 @@ function Reports({ accessToken }) {
             Next
           </button>
         </div>
-      </div>
-    </div>
+
+           </div>  {/* Line 494 */}
+
+      {/* View Details Modal */}
+      {selectedRecord && (
+        <div
+          className="reports-modal-overlay"
+          onClick={() => setSelectedRecord(null)}
+        >
+          <div
+            className="reports-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Weighment Details"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <h3>Weighment Details</h3>
+
+            {columns.map(([field, label]) => (
+              <p key={field}>
+                <strong>{label}:</strong>{" "}
+                {selectedRecord[field] ?? "—"}
+              </p>
+            ))}
+
+            <button
+              type="button"
+              onClick={() => setSelectedRecord(null)}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
+    </div>  
   );
 }
 
