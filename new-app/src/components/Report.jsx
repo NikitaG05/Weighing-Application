@@ -266,9 +266,7 @@ function Reports({ accessToken }) {
           }}
           disabled={sitesLoading || Boolean(sitesError)}
         >
-          {sites.length === 0 && (
-            <option value="all">All Weighbridge Sites</option>
-          )}
+          <option value="all">All Weighbridge Sites</option>
           {sites.map((site) => {
             const id = site.id ?? site.siteId;
             return (
