@@ -1,4 +1,4 @@
-
+﻿
 package com.example.weighbridge.repository;
 
 import com.example.weighbridge.model.WeighmentRecord;
@@ -40,6 +40,9 @@ public interface WeighmentRecordRepository
         findBySiteIdAndCompletedTrueAndDeletedFalseAndCloudHiddenFalseOrderByTicketDateDesc(
                 Long siteId
         );
+
+        List<WeighmentRecord>
+    findByCompletedTrueAndDeletedFalseAndCloudHiddenFalseOrderByTicketDateDesc();
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("""

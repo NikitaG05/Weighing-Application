@@ -104,8 +104,11 @@ const handleError = (error) => {
 const weighmentReportApi = {
 
   // ADMIN: Fetch completed, non-deleted reports
-  getLocalReports: async (siteId) => {
-    const id = validateSiteId(siteId);
+ getLocalReports: async (siteId = null) => {
+  const id =
+    siteId === null || siteId === "" || siteId === "all"
+      ? null
+      : validateSiteId(siteId);
 
     try {
       const session = getSession();
@@ -123,7 +126,7 @@ const weighmentReportApi = {
       const response = await weighmentApi.get(
         "/api/admin/reports/local",
         {
-          params: { siteId: id },
+          params: id === null ? {} : { siteId: id },
           headers: getHeaders(session),
         }
       );

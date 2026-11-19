@@ -71,7 +71,7 @@ function Reports({ accessToken }) {
   const [page, setPage] = useState(1);
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [sites, setSites] = useState([]);
-  const [selectedSiteId, setSelectedSiteId] = useState("");
+  const [selectedSiteId, setSelectedSiteId] = useState("all");
   const [sitesLoading, setSitesLoading] = useState(true);
   const [sitesError, setSitesError] = useState("");
   const requestId = useRef(0);
@@ -102,15 +102,14 @@ function Reports({ accessToken }) {
         );
         setSites(validSites);
         setSelectedSiteId((previous) => {
-          const exists = validSites.some(
-            (site) => String(site.id ?? site.siteId) === String(previous)
-          );
-          return exists
-            ? previous
-            : validSites.length
-              ? String(validSites[0].id ?? validSites[0].siteId)
-              : "";
-        });
+              if (previous === "all") return "all";
+
+              const exists = validSites.some(
+                (site) => String(site.id ?? site.siteId) === String(previous)
+              );
+
+              return exists ? previous : "all";
+            });
       } catch (err) {
         if (!cancelled) {
           setSites([]);
@@ -139,13 +138,6 @@ function Reports({ accessToken }) {
   // Load completed reports whenever the site changes or Refresh is clicked.
   const loadReports = useCallback(async () => {
     const currentRequest = ++requestId.current;
-
-    if (!selectedSiteId) {
-      setRecords([]);
-      setError("");
-      setLoading(false);
-      return;
-    }
 
     setLoading(true);
     setError("");
@@ -272,12 +264,10 @@ function Reports({ accessToken }) {
             setRecords([]);
             setPage(1);
           }}
-          disabled={sitesLoading || sites.length === 0}
+          disabled={sitesLoading || Boolean(sitesError)}
         >
           {sites.length === 0 && (
-            <option value="">
-              {sitesLoading ? "Loading sites..." : "No sites available"}
-            </option>
+            <option value="all">All Weighbridge Sites</option>
           )}
           {sites.map((site) => {
             const id = site.id ?? site.siteId;
