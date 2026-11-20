@@ -1,6 +1,7 @@
 
 package com.example.weighbridge.controller;
 
+import com.example.weighbridge.model.SiteMaster;
 import com.example.weighbridge.model.WeighmentRecord;
 import com.example.weighbridge.repository.SiteRepository;
 import com.example.weighbridge.repository.WeighmentRecordRepository;
@@ -10,6 +11,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/admin/reports")
@@ -30,34 +36,42 @@ public class LocalReportsController {
     public ResponseEntity<List<WeighmentRecord>> getCloudReports(
             @RequestParam(required = false) Long siteId) {
 
-        List<WeighmentRecord> records;
-
-        if (siteId == null) {
-            // All sites
-            records = repository
-                .findByCompletedTrueAndDeletedFalseAndCloudHiddenFalseOrderByTicketDateDesc();
-        } else {
-            // Selected site only
-            if (siteId <= 0) {
-                return ResponseEntity.badRequest().build();
-            }
-
-            records = repository
-                .findBySiteIdAndCompletedTrueAndDeletedFalseAndCloudHiddenFalseOrderByTicketDateDesc(
-                    siteId
-                );
+        if (siteId != null && siteId <= 0) {
+            return ResponseEntity.badRequest().build();
         }
 
-        records.forEach(record -> {
-            if (record.getWbName() == null ||
-                record.getWbName().isBlank()) {
+        List<WeighmentRecord> records = siteId == null
+                ? repository.findByCompletedTrueAndDeletedFalseAndCloudHiddenFalseOrderByTicketDateDesc()
+                : repository.findBySiteIdAndCompletedTrueAndDeletedFalseAndCloudHiddenFalseOrderByTicketDateDesc(siteId);
 
-                siteRepository.findById(record.getSiteId())
-                    .ifPresent(site ->
-                        record.setWbName(site.getSiteName())
-                    );
-            }
-        });
+        Set<Long> missingSiteIds = records.stream()
+                .filter(record -> record.getWbName() == null
+                        || record.getWbName().isBlank())
+                .map(WeighmentRecord::getSiteId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+
+        if (!missingSiteIds.isEmpty()) {
+            Map<Long, SiteMaster> sites = siteRepository
+                    .findAllById(missingSiteIds)
+                    .stream()
+                    .collect(Collectors.toMap(
+                            SiteMaster::getId,
+                            Function.identity()
+                    ));
+
+            records.forEach(record -> {
+                if (record.getWbName() == null
+                        || record.getWbName().isBlank()) {
+
+                    SiteMaster site = sites.get(record.getSiteId());
+
+                    if (site != null) {
+                        record.setWbName(site.getSiteName());
+                    }
+                }
+            });
+        }
 
         return ResponseEntity.ok(records);
     }
