@@ -1,4 +1,4 @@
-﻿
+
 package com.example.weighbridge.repository;
 
 import com.example.weighbridge.model.WeighmentRecord;
