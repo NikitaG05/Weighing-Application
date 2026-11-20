@@ -22,6 +22,15 @@ const columns = [
 
 // Convert Spring Boot camelCase fields to table fields.
 const normalizeRecord = (record) => ({
+    sourceTransactionId:
+    record.sourceTransactionId ??
+    record.SourceTransactionId ??
+    null,
+
+  siteId:
+    record.siteId ??
+    record.SiteId ??
+    null,
   TicketNo: record.ticketNo ?? record.TicketNo ?? "",
   WBName: record.wbName ?? record.WBName ?? "",
   VehicleNo: record.vehicleNo ?? record.VehicleNo ?? "",
@@ -60,9 +69,9 @@ function Reports({ accessToken }) {
   const [toDate, setToDate] = useState("");
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(1);
-
+  const [selectedRecord, setSelectedRecord] = useState(null);
   const [sites, setSites] = useState([]);
-  const [selectedSiteId, setSelectedSiteId] = useState("");
+  const [selectedSiteId, setSelectedSiteId] = useState("all");
   const [sitesLoading, setSitesLoading] = useState(true);
   const [sitesError, setSitesError] = useState("");
   const requestId = useRef(0);
@@ -93,15 +102,14 @@ function Reports({ accessToken }) {
         );
         setSites(validSites);
         setSelectedSiteId((previous) => {
-          const exists = validSites.some(
-            (site) => String(site.id ?? site.siteId) === String(previous)
-          );
-          return exists
-            ? previous
-            : validSites.length
-              ? String(validSites[0].id ?? validSites[0].siteId)
-              : "";
-        });
+              if (previous === "all") return "all";
+
+              const exists = validSites.some(
+                (site) => String(site.id ?? site.siteId) === String(previous)
+              );
+
+              return exists ? previous : "all";
+            });
       } catch (err) {
         if (!cancelled) {
           setSites([]);
@@ -130,13 +138,6 @@ function Reports({ accessToken }) {
   // Load completed reports whenever the site changes or Refresh is clicked.
   const loadReports = useCallback(async () => {
     const currentRequest = ++requestId.current;
-
-    if (!selectedSiteId) {
-      setRecords([]);
-      setError("");
-      setLoading(false);
-      return;
-    }
 
     setLoading(true);
     setError("");
@@ -216,6 +217,28 @@ function Reports({ accessToken }) {
     startIndex + pageSize
   );
 
+  const handleDelete = async (record) => {
+  const transactionId = record.sourceTransactionId;
+  const siteId = record.siteId ?? selectedSiteId;
+
+  if (!transactionId || !siteId) {
+    setError("Cannot delete: missing site or transaction ID.");
+    return;
+  }
+
+  const confirmed = window.confirm(
+    `Hide ticket ${record.TicketNo} from Cloud Reports?`
+  );
+
+  if (!confirmed) return;
+
+  // Backend DELETE testing is still pending.
+  // Do not send a DELETE request yet.
+  setError(
+    "Cloud DELETE is not enabled yet. Backend testing is pending."
+  );
+};
+
   const clearFilters = () => {
     setSearch("");
     setFromDate("");
@@ -241,13 +264,9 @@ function Reports({ accessToken }) {
             setRecords([]);
             setPage(1);
           }}
-          disabled={sitesLoading || sites.length === 0}
+          disabled={sitesLoading || Boolean(sitesError)}
         >
-          {sites.length === 0 && (
-            <option value="">
-              {sitesLoading ? "Loading sites..." : "No sites available"}
-            </option>
-          )}
+          <option value="all">All Weighbridge Sites</option>
           {sites.map((site) => {
             const id = site.id ?? site.siteId;
             return (
@@ -362,6 +381,7 @@ function Reports({ accessToken }) {
                     {label}
                   </th>
                 ))}
+                <th scope="col">Actions</th>
               </tr>
             </thead>
 
@@ -376,6 +396,24 @@ function Reports({ accessToken }) {
                         : String(record[field])}
                     </td>
                   ))}
+
+                  <td className="reports-actions">
+                      <button
+                        type="button"
+                        className="reports-view-btn"
+                        onClick={() => setSelectedRecord(record)}
+                      >
+                        View
+                      </button>
+
+                      <button
+                        type="button"
+                        className="reports-delete-btn"
+                        onClick={() => handleDelete(record)}
+                      >
+                        Delete
+                      </button>
+                    </td>
                 </tr>
               ))}
             </tbody>
@@ -440,8 +478,42 @@ function Reports({ accessToken }) {
             Next
           </button>
         </div>
-      </div>
-    </div>
+
+           </div>  {/* Line 494 */}
+
+      {/* View Details Modal */}
+      {selectedRecord && (
+        <div
+          className="reports-modal-overlay"
+          onClick={() => setSelectedRecord(null)}
+        >
+          <div
+            className="reports-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Weighment Details"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <h3>Weighment Details</h3>
+
+            {columns.map(([field, label]) => (
+              <p key={field}>
+                <strong>{label}:</strong>{" "}
+                {selectedRecord[field] ?? "—"}
+              </p>
+            ))}
+
+            <button
+              type="button"
+              onClick={() => setSelectedRecord(null)}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
+    </div>  
   );
 }
 

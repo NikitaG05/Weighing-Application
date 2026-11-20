@@ -81,6 +81,19 @@ public class WeighmentRecord {
     @Column(name = "is_deleted", nullable = false)
     private Boolean deleted = false;
 
+    // Cloud-only soft deletion.
+    // This flag is independent of the Desktop synchronization deleted status.
+    @Column(name = "cloud_hidden", nullable = false)
+    private Boolean cloudHidden = false;
+
+    public Boolean getCloudHidden() {
+        return cloudHidden;
+    }
+
+    public void setCloudHidden(Boolean cloudHidden) {
+        this.cloudHidden = cloudHidden;
+    }
+
     @Column(name = "operator_name", length = 100)
     private String operatorName;
 

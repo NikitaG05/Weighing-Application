@@ -28,22 +28,34 @@ public class LocalReportsController {
 
     @GetMapping("/local")
     public ResponseEntity<List<WeighmentRecord>> getCloudReports(
-            @RequestParam Long siteId) {
+            @RequestParam(required = false) Long siteId) {
 
-        List<WeighmentRecord> records =
-                repository
-                    .findBySiteIdAndCompletedTrueAndDeletedFalseOrderByTicketDateDesc(
-                        siteId
-                    );
+        List<WeighmentRecord> records;
 
-        String siteName = siteRepository.findById(siteId)
-                .map(site -> site.getSiteName())
-                .orElse(null);
+        if (siteId == null) {
+            // All sites
+            records = repository
+                .findByCompletedTrueAndDeletedFalseAndCloudHiddenFalseOrderByTicketDateDesc();
+        } else {
+            // Selected site only
+            if (siteId <= 0) {
+                return ResponseEntity.badRequest().build();
+            }
+
+            records = repository
+                .findBySiteIdAndCompletedTrueAndDeletedFalseAndCloudHiddenFalseOrderByTicketDateDesc(
+                    siteId
+                );
+        }
 
         records.forEach(record -> {
             if (record.getWbName() == null ||
                 record.getWbName().isBlank()) {
-                record.setWbName(siteName);
+
+                siteRepository.findById(record.getSiteId())
+                    .ifPresent(site ->
+                        record.setWbName(site.getSiteName())
+                    );
             }
         });
 

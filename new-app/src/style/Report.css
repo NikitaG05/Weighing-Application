@@ -176,3 +176,79 @@
   outline: 2px solid #087f8c;
   outline-offset: 2px;
 }
+
+.reports-actions {
+  display: flex;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.reports-view-btn,
+.reports-delete-btn {
+  border: none;
+  border-radius: 6px;
+  padding: 7px 12px;
+  color: white;
+  cursor: pointer;
+}
+
+.reports-view-btn {
+  background: #2563eb;
+}
+
+.reports-delete-btn {
+  background: #dc2626;
+}
+
+.reports-view-btn:hover {
+  background: #1d4ed8;
+}
+
+.reports-delete-btn:hover {
+  background: #b91c1c;
+}
+
+/* View Weighment Details Modal */
+.reports-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.reports-modal {
+  background: #fff;
+  color: #222;
+  border-radius: 12px;
+  padding: 24px;
+  width: 100%;
+  max-width: 600px;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.2);
+}
+
+.reports-modal h3 {
+  margin: 0 0 20px;
+  font-size: 22px;
+}
+
+.reports-modal p {
+  margin: 10px 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #eee;
+}
+
+.reports-modal button {
+  margin-top: 15px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  background: #2563eb;
+  color: white;
+  cursor: pointer;
+}

@@ -104,8 +104,11 @@ const handleError = (error) => {
 const weighmentReportApi = {
 
   // ADMIN: Fetch completed, non-deleted reports
-  getLocalReports: async (siteId) => {
-    const id = validateSiteId(siteId);
+ getLocalReports: async (siteId = null) => {
+  const id =
+    siteId === null || siteId === "" || siteId === "all"
+      ? null
+      : validateSiteId(siteId);
 
     try {
       const session = getSession();
@@ -123,7 +126,7 @@ const weighmentReportApi = {
       const response = await weighmentApi.get(
         "/api/admin/reports/local",
         {
-          params: { siteId: id },
+          params: id === null ? {} : { siteId: id },
           headers: getHeaders(session),
         }
       );
@@ -203,6 +206,45 @@ const weighmentReportApi = {
       );
 
       return response.data;
+    } catch (error) {
+      handleError(error);
+    }
+  },
+
+    // ADMIN: Hide a weighment from Cloud Reports only.
+  // Does not delete the original Desktop record.
+  deleteCloudWeighment: async (siteId, sourceTransactionId) => {
+    const id = validateSiteId(siteId);
+    const transactionId = Number(sourceTransactionId);
+
+    if (
+      !Number.isSafeInteger(transactionId) ||
+      transactionId <= 0
+    ) {
+      throw new Error("Invalid transaction ID.");
+    }
+
+    try {
+      const session = getSession();
+
+      const role = String(session.role || "")
+        .replace(/^ROLE_/i, "")
+        .toUpperCase();
+
+      if (role !== "ADMIN") {
+        throw new Error(
+          "Only administrators can delete cloud weighments."
+        );
+      }
+
+      await weighmentApi.delete(
+        `/api/admin/weighment-sync/site/${id}/transaction/${transactionId}`,
+        {
+          headers: getHeaders(session),
+        }
+      );
+
+      return true;
     } catch (error) {
       handleError(error);
     }

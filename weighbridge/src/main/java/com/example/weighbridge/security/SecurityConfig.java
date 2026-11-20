@@ -238,7 +238,8 @@ public class SecurityConfig {
                         "http://localhost:3000",
                         "http://127.0.0.1:3000",
                         "http://192.168.1.3:3000",
-                        "https://weighing-application-new-app.vercel.app"
+                        "https://weighing-application-new-app.vercel.app",
+                        "https://weighing-application-new-1h9wpn0ej-nikitag05.vercel.app"
                 )
         );
 
