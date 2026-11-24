@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { getMyWeighmentSites, getUserWeighments } from "../api/UserWeighmentApi";
 import "../style/UserWeighments.css";
+import WeighmentImageGallery from "./WeighmentImageGallery";
 
 const PAGE_SIZE = 10;
 const formatWeight = (value) => value == null ? "—" : `${Number(value).toLocaleString("en-IN", { maximumFractionDigits: 3 })} kg`;
@@ -97,7 +98,15 @@ export default function UserWeighments() {
         </table></div>
         <div className="uw-pagination"><span>{filtered.length} record(s) · Page {page} of {totalPages}</span><div><button disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>Previous</button><button disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)}>Next</button></div></div>
       </div>
-      {selected && <div className="uw-modal-backdrop" onClick={() => setSelected(null)}><div className="uw-modal" role="dialog" aria-modal="true" aria-label="Weighment transaction details" onClick={(e) => e.stopPropagation()}><div className="uw-modal-header"><h3>Transaction Details</h3><button type="button" onClick={() => setSelected(null)} aria-label="Close details">✕</button></div><dl>{[["Ticket No", selected.ticketNo],["Transaction ID", selected.sourceTransactionId],["Site", sites.find((s) => String(s.id) === siteId)?.siteName],["Weighbridge", selected.wbName],["Vehicle", selected.vehicleNo],["Party", selected.partyName],["Product", selected.productName],["Ticket Date", formatDate(selected.ticketDate)],["Gross Date", formatDate(selected.grossDate)],["Tare Date", formatDate(selected.tareDate)],["Gross Weight", formatWeight(selected.grossWeight)],["Tare Weight", formatWeight(selected.tareWeight)],["Net Weight", formatWeight(selected.netWeight)],["Status", selected.status],["Operator", selected.operatorName],["Shift", selected.shiftName],["Synced At", formatDate(selected.syncedAt)]].map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value ?? "—"}</dd></div>)}</dl></div></div>}
+      {selected && <div className="uw-modal-backdrop" onClick={() => setSelected(null)}><div className="uw-modal" role="dialog" aria-modal="true" aria-label="Weighment transaction details" onClick={(e) => e.stopPropagation()}><div className="uw-modal-header"><h3>Transaction Details</h3><button type="button" onClick={() => setSelected(null)} aria-label="Close details">✕</button></div><dl>{[["Ticket No", selected.ticketNo],["Transaction ID", selected.sourceTransactionId],["Site", sites.find((s) => String(s.id) === siteId)?.siteName],["Weighbridge", selected.wbName],["Vehicle", selected.vehicleNo],["Party", selected.partyName],["Product", selected.productName],["Ticket Date", formatDate(selected.ticketDate)],["Gross Date", formatDate(selected.grossDate)],["Tare Date", formatDate(selected.tareDate)],["Gross Weight", formatWeight(selected.grossWeight)],["Tare Weight", formatWeight(selected.tareWeight)],["Net Weight", formatWeight(selected.netWeight)],["Status", selected.status],["Operator", selected.operatorName],["Shift", selected.shiftName],["Synced At", formatDate(selected.syncedAt)]].map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value ?? "—"}</dd></div>)}</dl>
+
+          <WeighmentImageGallery
+            key={`${selected.siteId}-${selected.sourceTransactionId}`}
+            siteId={selected.siteId}
+            transactionId={selected.sourceTransactionId}
+          />
+
+        </div></div>}
     </section>
   );
 }

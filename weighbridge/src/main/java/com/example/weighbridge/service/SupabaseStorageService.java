@@ -1,5 +1,7 @@
 package com.example.weighbridge.service;
 
+import com.example.weighbridge.util.WeighmentImageTypeValidator;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.URLEncoder;
@@ -57,8 +59,7 @@ public class SupabaseStorageService {
             );
         }
 
-        if (!imageType.matches(
-                "FirstWeightImage[12]|SecondWeightImage[12]")) {
+        if (!WeighmentImageTypeValidator.isValid(imageType)) {
             throw new IllegalArgumentException(
                     "Invalid image type"
             );
@@ -147,4 +148,101 @@ public class SupabaseStorageService {
             );
         }
     }
+
+
+    public byte[] downloadImage(String storageKey) {
+
+        if (supabaseUrl.isBlank() || secretKey.isBlank()) {
+            throw new ResponseStatusException(
+                    HttpStatus.SERVICE_UNAVAILABLE,
+                    "Image storage is not configured"
+            );
+        }
+
+        if (storageKey == null || !storageKey.matches(
+                "sites/[1-9][0-9]*/transactions/[1-9][0-9]*/"
+                + "(FirstWeightImage[12]|SecondWeightImage[12]"
+                + "|GrossCamera[1-9][0-9]{0,2}"
+                + "|TareCamera[1-9][0-9]{0,2})/"
+                + "[a-f0-9]{64}\\.(jpg|png)")) {
+
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Invalid image storage reference"
+            );
+        }
+
+        String encodedPath = java.util.Arrays.stream(
+                        (bucket + "/" + storageKey).split("/"))
+                .map(part -> URLEncoder.encode(
+                        part, StandardCharsets.UTF_8))
+                .collect(java.util.stream.Collectors.joining("/"));
+
+        URI uri = URI.create(
+                supabaseUrl
+                + "/storage/v1/object/authenticated/"
+                + encodedPath
+        );
+
+        HttpRequest request = HttpRequest.newBuilder(uri)
+                .timeout(Duration.ofSeconds(90))
+                .header("apikey", secretKey)
+                .header("Authorization", "Bearer " + secretKey)
+                .GET()
+                .build();
+
+        try {
+            HttpResponse<java.io.InputStream> response =
+                    httpClient.send(
+                            request,
+                            HttpResponse.BodyHandlers.ofInputStream()
+                    );
+
+            try (java.io.InputStream body = response.body()) {
+
+                if (response.statusCode() == 404) {
+                    throw new ResponseStatusException(
+                            HttpStatus.NOT_FOUND,
+                            "Image file not found"
+                    );
+                }
+
+                if (response.statusCode() != 200) {
+                    throw new ResponseStatusException(
+                            HttpStatus.BAD_GATEWAY,
+                            "Unable to retrieve image from storage"
+                    );
+                }
+
+                int maxSize = 10 * 1024 * 1024;
+                byte[] bytes = body.readNBytes(maxSize + 1);
+
+                if (bytes.length == 0 || bytes.length > maxSize) {
+                    throw new ResponseStatusException(
+                            HttpStatus.BAD_GATEWAY,
+                            "Invalid stored image size"
+                    );
+                }
+
+                return bytes;
+            }
+
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_GATEWAY,
+                    "Image download interrupted",
+                    ex
+            );
+
+        } catch (IOException ex) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_GATEWAY,
+                    "Unable to download image",
+                    ex
+            );
+        }
+    }
+
 }
