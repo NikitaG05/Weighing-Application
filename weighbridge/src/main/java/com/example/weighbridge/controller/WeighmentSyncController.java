@@ -18,6 +18,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import com.example.weighbridge.dto.WeighmentImageResponseDTO;
+import com.example.weighbridge.service.WeighmentImageService;
+import org.springframework.http.MediaType;
+import org.springframework.http.CacheControl;
 
 @RestController
 @RequestMapping("/api/admin/weighment-sync")
@@ -27,15 +31,18 @@ public class WeighmentSyncController {
     private final WeighmentSyncService syncService;
     private final LoginRepository loginRepository;
     private final SiteRepository siteRepository;
+    private final WeighmentImageService imageService;
 
     public WeighmentSyncController(
             WeighmentSyncService syncService,
             LoginRepository loginRepository,
-            SiteRepository siteRepository) {
+            SiteRepository siteRepository,
+            WeighmentImageService imageService) {
 
         this.syncService = syncService;
         this.loginRepository = loginRepository;
         this.siteRepository = siteRepository;
+        this.imageService = imageService;
     }
 
     private Long requireAuthorizedSiteId(
@@ -185,4 +192,48 @@ public class WeighmentSyncController {
 
         return ResponseEntity.noContent().build();
         }
+
+    @GetMapping("/site/{siteId}/transaction/{sourceTransactionId}/images")
+    public ResponseEntity<List<WeighmentImageResponseDTO>> getImages(
+            @PathVariable Long siteId,
+            @PathVariable Integer sourceTransactionId,
+            Authentication authentication) {
+
+        Long authorizedSiteId = requireAuthorizedSiteId(
+                siteId, authentication
+        );
+
+        return ResponseEntity.ok()
+                .cacheControl(CacheControl.noStore())
+                .body(imageService.getImages(
+                        authorizedSiteId,
+                        sourceTransactionId
+                ));
+    }
+
+    @GetMapping("/site/{siteId}/transaction/{sourceTransactionId}/images/{imageType}")
+    public ResponseEntity<byte[]> getImage(
+            @PathVariable Long siteId,
+            @PathVariable Integer sourceTransactionId,
+            @PathVariable String imageType,
+            Authentication authentication) {
+
+        Long authorizedSiteId = requireAuthorizedSiteId(
+                siteId, authentication
+        );
+
+        WeighmentImageService.ImageDownload image =
+                imageService.getImage(
+                        authorizedSiteId,
+                        sourceTransactionId,
+                        imageType
+                );
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(image.contentType()))
+                .contentLength(image.bytes().length)
+                .cacheControl(CacheControl.noStore())
+                .header("X-Content-Type-Options", "nosniff")
+                .body(image.bytes());
+    }
 }

@@ -17,7 +17,7 @@ function imageLabel(type) {
   return number ? `Camera ${number}` : type;
 }
 
-function CameraImage({ siteId, transactionId, image, onPreview }) {
+function CameraImage({ siteId, transactionId, image, onPreview, isAdmin }) {
   const [url, setUrl] = useState("");
   const [error, setError] = useState("");
 
@@ -32,7 +32,8 @@ function CameraImage({ siteId, transactionId, image, onPreview }) {
       siteId,
       transactionId,
       image.imageType,
-      controller.signal
+      controller.signal,
+      isAdmin
     )
       .then((blob) => {
         if (controller.signal.aborted) return;
@@ -54,7 +55,7 @@ function CameraImage({ siteId, transactionId, image, onPreview }) {
       controller.abort();
       if (objectUrl) URL.revokeObjectURL(objectUrl);
     };
-  }, [siteId, transactionId, image.imageType]);
+  }, [siteId, transactionId, image.imageType, isAdmin]);
 
   return (
     <div className="wig-image-card">
@@ -86,7 +87,8 @@ function CameraImage({ siteId, transactionId, image, onPreview }) {
 
 export default function WeighmentImageGallery({
   siteId,
-  transactionId
+  transactionId,
+  isAdmin = false
 }) {
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -105,7 +107,8 @@ export default function WeighmentImageGallery({
     getWeighmentImages(
       siteId,
       transactionId,
-      controller.signal
+      controller.signal,
+      isAdmin
     )
       .then((data) => {
         if (!controller.signal.aborted) {
@@ -124,7 +127,7 @@ export default function WeighmentImageGallery({
       });
 
     return () => controller.abort();
-  }, [siteId, transactionId, reload]);
+  }, [siteId, transactionId, reload, isAdmin]);
 
   useEffect(() => {
     if (!preview) return;
@@ -187,6 +190,7 @@ export default function WeighmentImageGallery({
                   transactionId={transactionId}
                   image={image}
                   onPreview={setPreview}
+                  isAdmin={isAdmin}
                 />
               ))}
             </div>

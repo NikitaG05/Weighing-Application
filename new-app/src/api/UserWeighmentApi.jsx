@@ -1,6 +1,8 @@
 const BASE_URL = `${(process.env.REACT_APP_API_URL || "").replace(/\/$/, "")}/api/user/weighments`;
 
-async function request(path, signal, asBlob = false) {
+const ADMIN_BASE_URL = `${(process.env.REACT_APP_API_URL || "").replace(/\/$/, "")}/api/admin/weighment-sync`;
+
+async function request(path, signal, asBlob = false, isAdmin = false) {
   let session;
   try {
     session = JSON.parse(sessionStorage.getItem("weighbridgeSession") || "{}");
@@ -10,7 +12,7 @@ async function request(path, signal, asBlob = false) {
   const token = session.accessToken;
   if (!token) throw new Error("Session expired. Please log in again.");
 
-  const response = await fetch(`${BASE_URL}${path}`, {
+  const response = await fetch(`${isAdmin ? ADMIN_BASE_URL : BASE_URL}${path}`, {
     headers: { Authorization: `Bearer ${token}`, Accept: asBlob ? "image/jpeg, image/png" : "application/json" },
     signal,
   });
@@ -29,18 +31,21 @@ export const getUserWeighments = (siteId, signal) =>
 
 
 export const getWeighmentImages = (
-  siteId, transactionId, signal
+  siteId, transactionId, signal, isAdmin = false
 ) =>
   request(
     `/site/${encodeURIComponent(siteId)}/transaction/${encodeURIComponent(transactionId)}/images`,
-    signal
+    signal,
+    false,
+    isAdmin
   );
 
 export const getWeighmentImage = (
-  siteId, transactionId, imageType, signal
+  siteId, transactionId, imageType, signal, isAdmin = false
 ) =>
   request(
     `/site/${encodeURIComponent(siteId)}/transaction/${encodeURIComponent(transactionId)}/images/${encodeURIComponent(imageType)}`,
     signal,
-    true
+    true,
+    isAdmin
   );
