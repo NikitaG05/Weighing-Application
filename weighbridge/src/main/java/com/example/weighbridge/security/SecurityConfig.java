@@ -228,20 +228,13 @@ public class SecurityConfig {
    
     // React frontend CORS configuration
     @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
+    public CorsConfigurationSource corsConfigurationSource(
+            @Value("${app.cors.allowed-origins}") List<String> allowedOrigins) {
 
         CorsConfiguration configuration =
                 new CorsConfiguration();
 
-        configuration.setAllowedOrigins(
-                List.of(
-                        "http://localhost:3000",
-                        "http://127.0.0.1:3000",
-                        "http://192.168.1.3:3000",
-                        "https://weighing-application-new-app.vercel.app",
-                        "https://weighing-application-new-1h9wpn0ej-nikitag05.vercel.app"
-                )
-        );
+        configuration.setAllowedOrigins(allowedOrigins);
 
         configuration.setAllowedMethods(
                 List.of(
