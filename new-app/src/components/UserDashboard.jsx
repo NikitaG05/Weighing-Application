@@ -1,3 +1,4 @@
+import TodayTripOverview from "./TodayTripOverview";
 import { useEffect, useState } from "react";
 import { getMyWeighmentSites, getUserWeighments } from "../api/UserWeighmentApi";
 import { getParties } from "../api/partyApi";
@@ -362,7 +363,15 @@ export default function UserDashboard({ username, onLogout }) {
                       </div>
                     </section>
 
-                    <section className="dashboard-insights">
+                    <TodayTripOverview
+  records={records}
+  loading={loading}
+  error={errors.records || ""}
+  scope={siteName}
+  onRefresh={() => setRefresh(v => v + 1)}
+/>
+
+<section className="dashboard-insights">
                       <div className="dashboard-insights-header">
                         <div><h3>Operations Overview</h3><p>{siteName} - Read-only access</p></div>
                         <button className="dashboard-insights-refresh" disabled={loading}

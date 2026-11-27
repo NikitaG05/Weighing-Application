@@ -1,3 +1,4 @@
+import AdminTodayTripOverview from "./AdminTodayTripOverview";
 import { useCallback, useEffect, useState } from "react";
 
 import UserRegistration from "./Register";
@@ -468,7 +469,9 @@ function AdminDashboard({
                   </div>
                 </div>
 
-                <section className="dashboard-insights" aria-label="Dashboard insights">
+                <AdminTodayTripOverview accessToken={accessToken} />
+
+<section className="dashboard-insights" aria-label="Dashboard insights">
                   <div className="dashboard-insights-header">
                     <div>
                       <h3>Operations Overview</h3>
