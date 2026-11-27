@@ -174,6 +174,7 @@ public class SecurityConfig {
                         ).hasRole("DESKTOP_SYNC")
 
                         .requestMatchers(HttpMethod.GET, "/api/user/weighments/**").hasRole("USER").requestMatchers(HttpMethod.GET, "/api/user/parties", "/api/user/parties/**", "/api/vehicles/site/**").hasAnyRole("ADMIN", "USER").requestMatchers("/api/admin/**").hasRole("ADMIN").requestMatchers("/api/user/parties", "/api/user/parties/**", "/api/vehicles/**").hasRole("ADMIN").requestMatchers("/api/products/**", "/api/units/**", "/api/product-types/**").hasRole("ADMIN").requestMatchers(HttpMethod.GET, "/api/user/me").hasRole("USER")
+                        .requestMatchers(HttpMethod.GET, "/api/user/weighbridge-status").hasRole("USER")
                         .requestMatchers("/api/user/**").denyAll().requestMatchers("/api/**").hasRole("ADMIN")
 
 // Protect remaining routes

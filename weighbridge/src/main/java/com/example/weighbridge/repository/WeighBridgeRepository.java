@@ -7,4 +7,5 @@ import com.example.weighbridge.model.WeighBridge;
 public interface WeighBridgeRepository
         extends JpaRepository<WeighBridge, Long> {
             
+    java.util.List<WeighBridge> findBySite_Id(Long siteId);
 }
