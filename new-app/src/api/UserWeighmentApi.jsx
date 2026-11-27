@@ -2,7 +2,7 @@ const BASE_URL = `${(process.env.REACT_APP_API_URL || "").replace(/\/$/, "")}/ap
 
 const ADMIN_BASE_URL = `${(process.env.REACT_APP_API_URL || "").replace(/\/$/, "")}/api/admin/weighment-sync`;
 
-async function request(path, signal, asBlob = false, isAdmin = false) {
+async function request(path, signal, asBlob = false, isAdmin = false, baseUrl = BASE_URL) {
   let session;
   try {
     session = JSON.parse(sessionStorage.getItem("weighbridgeSession") || "{}");
@@ -12,7 +12,7 @@ async function request(path, signal, asBlob = false, isAdmin = false) {
   const token = session.accessToken;
   if (!token) throw new Error("Session expired. Please log in again.");
 
-  const response = await fetch(`${isAdmin ? ADMIN_BASE_URL : BASE_URL}${path}`, {
+  const response = await fetch(`${isAdmin ? ADMIN_BASE_URL : baseUrl}${path}`, {
     headers: { Authorization: `Bearer ${token}`, Accept: asBlob ? "image/jpeg, image/png" : "application/json" },
     signal,
   });
@@ -49,3 +49,5 @@ export const getWeighmentImage = (
     true,
     isAdmin
   );
+
+export const getUserWeighbridgeStatus = (signal) => request("", signal, false, false, BASE_URL.replace(/\/weighments$/, "/weighbridge-status"));
