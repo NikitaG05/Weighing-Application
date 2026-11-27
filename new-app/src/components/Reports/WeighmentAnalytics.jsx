@@ -17,6 +17,7 @@ import {
 } from "recharts";
 
 import weighmentReportApi from "../../api/weighmentReportApi";
+import { getUserWeighments } from "../../api/UserWeighmentApi";
 import "../../style/WeighmentAnalytics.css";
 
 const COLORS = [
@@ -43,7 +44,7 @@ const getTicketDay = (date) => {
     : null;
 };
 
-function WeighmentAnalytics({ siteId }) {
+function WeighmentAnalytics({ siteId, readOnly = false }) {
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -57,7 +58,7 @@ function WeighmentAnalytics({ siteId }) {
 
       try {
         const data =
-          await weighmentReportApi.getAllBySite(siteId);
+          await (readOnly ? getUserWeighments(siteId) : weighmentReportApi.getAllBySite(siteId));
 
         if (!cancelled) {
           setRecords(Array.isArray(data) ? data : []);
@@ -78,7 +79,7 @@ function WeighmentAnalytics({ siteId }) {
     return () => {
       cancelled = true;
     };
-  }, [siteId]);
+  }, [siteId, readOnly]);
 
   const analytics = useMemo(() => {
     const active = records.filter(

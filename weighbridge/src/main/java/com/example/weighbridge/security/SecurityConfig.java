@@ -173,43 +173,10 @@ public class SecurityConfig {
                                 "/api/sync/**"
                         ).hasRole("DESKTOP_SYNC")
 
-                        // Global Masters - ADMIN and USER read access
-                        .requestMatchers(
-                                HttpMethod.GET,
-                                "/api/units",
-                                "/api/product-types",
-                                "/api/products"
-                        ).hasAnyRole("ADMIN", "USER")
+                        .requestMatchers(HttpMethod.GET, "/api/user/weighments/**").hasRole("USER").requestMatchers(HttpMethod.GET, "/api/user/parties", "/api/user/parties/**", "/api/vehicles/site/**").hasAnyRole("ADMIN", "USER").requestMatchers("/api/admin/**").hasRole("ADMIN").requestMatchers("/api/user/parties", "/api/user/parties/**", "/api/vehicles/**").hasRole("ADMIN").requestMatchers("/api/products/**", "/api/units/**", "/api/product-types/**").hasRole("ADMIN").requestMatchers(HttpMethod.GET, "/api/user/me").hasRole("USER")
+                        .requestMatchers("/api/user/**").denyAll().requestMatchers("/api/**").hasRole("ADMIN")
 
-                        // Weighment viewing APIs
-                        // Site ownership is also checked in the controller
-                        .requestMatchers(
-                                HttpMethod.GET,
-                                "/api/user/weighments/**"
-                        ).hasRole("USER")
-
-                        // ADMIN APIs
-                        .requestMatchers(
-                                "/api/admin/**"
-                        ).hasRole("ADMIN")
-
-                        // Party Master APIs - ADMIN and USER
-                        .requestMatchers(
-                                "/api/user/parties",
-                                "/api/user/parties/**"
-                        ).hasAnyRole("ADMIN", "USER")
-
-                        // Other USER APIs
-                        .requestMatchers(
-                                "/api/user/**"
-                        ).hasRole("USER")
-
-                        // Other API endpoints require authentication
-                        .requestMatchers(
-                                "/api/**"
-                        ).authenticated()
-
-                        // Protect remaining routes
+// Protect remaining routes
                         .anyRequest()
                         .authenticated()
                 )
