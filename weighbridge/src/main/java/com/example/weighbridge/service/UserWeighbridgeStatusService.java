@@ -75,7 +75,7 @@ public class UserWeighbridgeStatusService {
                                 DesktopSyncClient::isEnabled)
                                 ? "ACTIVE" : "INACTIVE";
 
-                var matchedRecords = records.stream()
+                var matchedRecords = bridges.size() == 1 ? records : records.stream()
                         .filter(r -> r.getWbName() != null
                                 && r.getWbName().trim()
                                 .equalsIgnoreCase(
