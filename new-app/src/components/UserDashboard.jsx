@@ -9,15 +9,97 @@ import ThemeSelector from "./ThemeSelector";
 import "../style/AdminDashboard.css";
 import "../style/UserWeighments.css";
 
+function DashboardIcon({ name, size = 20 }) {
+  const paths = {
+    menu: (
+      <>
+        <path d="M4 7h16M4 12h16M4 17h16" />
+      </>
+    ),
+    close: <path d="M6 6l12 12M18 6L6 18" />,
+    dashboard: (
+      <>
+        <rect x="3" y="3" width="7" height="7" rx="1" />
+        <rect x="14" y="3" width="7" height="7" rx="1" />
+        <rect x="3" y="14" width="7" height="7" rx="1" />
+        <rect x="14" y="14" width="7" height="7" rx="1" />
+      </>
+    ),
+    masters: (
+      <>
+        <ellipse cx="12" cy="5" rx="8" ry="3" />
+        <path d="M4 5v7c0 1.7 3.6 3 8 3s8-1.3 8-3V5" />
+        <path d="M4 12v7c0 1.7 3.6 3 8 3s8-1.3 8-3v-7" />
+      </>
+    ),
+    users: (
+      <>
+        <circle cx="9" cy="8" r="3" />
+        <path d="M3 20v-2a6 6 0 0 1 12 0v2" />
+        <path d="M17 5a3 3 0 0 1 0 6M18 15a5 5 0 0 1 3 5" />
+      </>
+    ),
+    reports: (
+      <>
+        <path d="M5 3h10l4 4v14H5z" />
+        <path d="M15 3v5h4M9 17v-4M12 17v-7M15 17v-3" />
+      </>
+    ),
+    analytics: (
+      <>
+        <path d="M4 20V11h4v9M10 20V5h4v15M16 20v-7h4v7" />
+      </>
+    ),
+    palette: (
+      <>
+        <path d="M12 3a9 9 0 1 0 0 18h1.2a2 2 0 0 0 1.6-3.2 1.7 1.7 0 0 1 1.3-2.8H18a3 3 0 0 0 3-3 9 9 0 0 0-9-9Z" />
+        <circle cx="7.5" cy="11" r="1" />
+        <circle cx="10" cy="7" r="1" />
+        <circle cx="15" cy="7.5" r="1" />
+      </>
+    ),
+    logout: (
+      <>
+        <path d="M10 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h5" />
+        <path d="M14 7l5 5-5 5M19 12H9" />
+      </>
+    ),
+    chevronLeft: <path d="M15 18l-6-6 6-6" />,
+    chevronRight: <path d="M9 18l6-6-6-6" />,
+    arrow: <path d="M5 12h14m-6-6 6 6-6 6" />,
+    sites: <><path d="M3 10l9-7 9 7v10H3z" /><path d="M9 20v-7h6v7" /></>,
+    check: <><circle cx="12" cy="12" r="9" /><path d="m8 12 3 3 5-6" /></>,
+    pause: <><circle cx="12" cy="12" r="9" /><path d="M10 9v6M14 9v6" /></>,
+    key: <><circle cx="8" cy="15" r="4" /><path d="M11 12 21 2M17 6l3 3M15 8l3 3" /></>,
+    shield: <><path d="M12 2 4 5v6c0 5 3.4 8.3 8 11 4.6-2.7 8-6 8-11V5z" /><path d="m9 12 2 2 4-4" /></>,
+  };
+
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      {paths[name] || paths.dashboard}
+    </svg>
+  );
+}
+
 const menus = [
-  ["dashboard", "Dashboard", "\u25A6"],
-  ["parties", "Party Master", "\u2659"],
-  ["vehicles", "Vehicle Master", "\u25A4"],
-  ["products", "Products", "\u25A3"],
-  ["weighments", "Weighments", "\u2696"],
-  ["reports", "Reports", "\u25A4"],
-  ["analytics", "Analytics", "\u25A5"],
-  ["appearance", "Appearance", "\u2699"]
+  ["dashboard", "Dashboard", "dashboard"],
+  ["parties", "Party Master", "users"],
+  ["vehicles", "Vehicle Master", "reports"],
+  ["products", "Products", "masters"],
+  ["weighments", "Weighments", "masters"],
+  ["reports", "Reports", "reports"],
+  ["analytics", "Analytics", "analytics"],
+  ["appearance", "Appearance", "palette"]
 ];
 
 function ReadOnlyTable({ title, rows, columns }) {
@@ -31,7 +113,7 @@ function ReadOnlyTable({ title, rows, columns }) {
   return (
     <section className="uw-root">
       <div className="uw-heading">
-        <div><h2>{title}</h2><p>Read-only site records</p></div>
+        <div><h1>{title}</h1><p>Read-only site records</p></div>
       </div>
       <div className="uw-panel">
         <div className="uw-filters">
@@ -158,12 +240,12 @@ export default function UserDashboard({ username, onLogout }) {
       <aside className={`admin-sidebar ${mobileOpen ? "mobile-open" : ""}`}>
         <div className="admin-sidebar-brand">
           <div className="admin-brand-identity">
-            <img className="admin-brand-logo" src={`${process.env.PUBLIC_URL}/favicon.ico`} alt="TareX" />
-            {!collapsed && <div className="admin-brand-text"><strong>TareX</strong><span>Cloud Workspace</span></div>}
+            <img className="admin-sidebar-logo" src={`${process.env.PUBLIC_URL}/favicon.ico`} alt="TareX" />
+            {!collapsed && <div className="admin-brand-text"><strong>TareX</strong><span>WEIGHING SYSTEMS</span></div>}
           </div>
           <button type="button" className="admin-sidebar-header-toggle" aria-label="Toggle sidebar"
             onClick={() => { setCollapsed(v => !v); setMobileOpen(false); }}>
-            {collapsed ? ">" : "<"}
+            <DashboardIcon name={collapsed ? "chevronRight" : "close"} />
           </button>
         </div>
         <div className="admin-sidebar-divider" />
@@ -173,13 +255,13 @@ export default function UserDashboard({ username, onLogout }) {
             <button type="button" key={id} title={label}
               className={`admin-sidebar-link ${active === id ? "active" : ""}`}
               onClick={() => navigate(id)}>
-              <span className="admin-sidebar-link-icon">{icon}</span>
+              <span className="admin-sidebar-link-icon"><DashboardIcon name={icon} /></span>
               {!collapsed && <span className="admin-sidebar-link-label">{label}</span>}
             </button>
           ))}
         </nav>
         <div className="admin-sidebar-bottom">
-          <button className="admin-sidebar-logout" type="button" onClick={onLogout}>Logout</button>
+          <button className="admin-sidebar-link admin-sidebar-logout" type="button" onClick={onLogout}><span className="admin-sidebar-link-icon"><DashboardIcon name="logout" /></span><span className="admin-sidebar-link-label">Logout</span></button>
         </div>
       </aside>
 
@@ -187,8 +269,8 @@ export default function UserDashboard({ username, onLogout }) {
         <header className="admin-topbar">
           <div className="admin-topbar-left">
             <button className="admin-mobile-menu-button" type="button" aria-label="Open menu"
-              onClick={() => setMobileOpen(v => !v)}>Menu</button>
-            <div><span className="admin-topbar-eyebrow">WEIGHBRIDGE CLOUD</span><h2>{title}</h2></div>
+              onClick={() => setMobileOpen(v => !v)}><DashboardIcon name="menu" /></button>
+            <div><span className="admin-topbar-eyebrow">WEIGHBRIDGE CLOUD</span><h1>{title}</h1></div>
           </div>
           <div className="admin-topbar-user">
             <span className="admin-topbar-welcome">Welcome, {username}</span>
@@ -199,9 +281,9 @@ export default function UserDashboard({ username, onLogout }) {
         <main className="admin-main-area">
           <div className="admin-content">
             {active !== "appearance" && active !== "weighments" &&
-              <div className="uw-filters">
+              <div className="wa-site-selector">
                 <label>Weighbridge Site
-                  <select value={siteId} disabled={sitesLoading || !sites.length}
+                  <select className="wa-site-select" value={siteId} disabled={sitesLoading || !sites.length}
                     onChange={e => changeSite(e.target.value)}>
                     {!sites.length && <option value="">No assigned sites</option>}
                     {sites.map(s => <option key={s.id} value={String(s.id)}>{s.siteName}</option>)}
@@ -223,8 +305,8 @@ export default function UserDashboard({ username, onLogout }) {
                   <div className="dashboard-home">
                     <section className="dashboard-welcome">
                       <div className="dashboard-welcome-copy">
-                        <span className="dashboard-welcome-label">USER WORKSPACE</span>
-                        <h1>Welcome back, {username}</h1>
+                        <span className="dashboard-label">USER WORKSPACE</span>
+                        <h2>Welcome back, {username}</h2>
                         <p>View your synchronized weighbridge data for {siteName}.</p>
                         <div className="dashboard-welcome-actions">
                           <button className="dashboard-hero-primary" onClick={() => navigate("weighments")}>View Weighments</button>
@@ -234,7 +316,7 @@ export default function UserDashboard({ username, onLogout }) {
                       <div className="dashboard-hero-art" aria-hidden="true">
                         <div className="dashboard-hero-ring dashboard-hero-ring-one" />
                         <div className="dashboard-hero-ring dashboard-hero-ring-two" />
-                        <span className="dashboard-hero-symbol">TareX</span>
+                        <div className="dashboard-hero-symbol"><DashboardIcon name="masters" size={54} /></div>
                       </div>
                     </section>
 
@@ -252,7 +334,7 @@ export default function UserDashboard({ username, onLogout }) {
                           <div className="dashboard-insight-card" key={label}>
                             <div className="dashboard-insight-top">
                               <span className="dashboard-insight-label">{label}</span>
-                              <span className="dashboard-insight-icon">&#9638;</span>
+                              <span className="dashboard-insight-icon"><DashboardIcon name={source === "parties" ? "users" : source === "vehicles" ? "sites" : label === "Completed" ? "check" : label === "Pending" ? "pause" : "masters"} size={21} /></span>
                             </div>
                             <strong className="dashboard-insight-value">
                               {loading ? "..." : errors[source] ? "-" : value}
@@ -266,7 +348,7 @@ export default function UserDashboard({ username, onLogout }) {
                     <div className="dashboard-shortcuts">
                       {menus.filter(m => ["parties","vehicles","products","weighments","reports","analytics"].includes(m[0])).map(([id,label,icon]) =>
                         <button key={id} className="dashboard-shortcut" onClick={() => navigate(id)}>
-                          <span className="shortcut-icon">{icon}</span>
+                          <span className="shortcut-icon"><DashboardIcon name={icon} /></span>
                           <strong>{label}</strong><span>View site records</span>
                           <span className="shortcut-link">Open &rarr;</span>
                         </button>
