@@ -195,7 +195,7 @@ public class SecurityConfig {
     }
    
     // React frontend CORS configuration
-        @Bean
+    @Bean
     public CorsConfigurationSource corsConfigurationSource(
             @Value("${app.cors.allowed-origins}") List<String> allowedOrigins) {
 

@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import weighmentReportApi from "../api/weighmentReportApi";
 import { getSites } from "../api/sitesApi";
 import "../style/Report.css";
+import WeighmentImageGallery from "./WeighmentImageGallery";
 
 const columns = [
   ["TicketNo", "Ticket No."],
@@ -503,6 +504,17 @@ function Reports({ accessToken }) {
               </p>
             ))}
 
+
+            {selectedRecord.siteId && selectedRecord.sourceTransactionId ? (
+              <WeighmentImageGallery
+                key={`${selectedRecord.siteId}-${selectedRecord.sourceTransactionId}`}
+                siteId={selectedRecord.siteId}
+                transactionId={selectedRecord.sourceTransactionId}
+                isAdmin={true}
+              />
+            ) : (
+              <p>CCTV images unavailable: missing transaction or site ID.</p>
+            )}
             <button
               type="button"
               onClick={() => setSelectedRecord(null)}

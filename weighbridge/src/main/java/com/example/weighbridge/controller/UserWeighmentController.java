@@ -2,12 +2,16 @@
 package com.example.weighbridge.controller;
 
 import com.example.weighbridge.dto.WeighmentSyncResponseDTO;
+import com.example.weighbridge.dto.WeighmentImageResponseDTO;
 import com.example.weighbridge.model.AdminLogin;
 import com.example.weighbridge.repository.LoginRepository;
 import com.example.weighbridge.repository.SiteRepository;
 import com.example.weighbridge.service.WeighmentSyncService;
+import com.example.weighbridge.service.WeighmentImageService;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -25,15 +29,18 @@ public class UserWeighmentController {
     private final WeighmentSyncService weighmentSyncService;
     private final LoginRepository loginRepository;
     private final SiteRepository siteRepository;
+    private final WeighmentImageService imageService;
 
     public UserWeighmentController(
             WeighmentSyncService weighmentSyncService,
             LoginRepository loginRepository,
-            SiteRepository siteRepository) {
+            SiteRepository siteRepository,
+            WeighmentImageService imageService) {
 
         this.weighmentSyncService = weighmentSyncService;
         this.loginRepository = loginRepository;
         this.siteRepository = siteRepository;
+        this.imageService = imageService;
     }
 
     // Validate the authenticated USER account.
@@ -181,4 +188,52 @@ public class UserWeighmentController {
                 )
         );
     }
+
+
+    @GetMapping("/site/{siteId}/transaction/{sourceTransactionId}/images")
+    public ResponseEntity<List<WeighmentImageResponseDTO>> getImages(
+            @PathVariable Long siteId,
+            @PathVariable Integer sourceTransactionId,
+            Authentication authentication) {
+
+        Long authorizedSiteId = requireAuthorizedSiteId(
+                siteId, authentication
+        );
+
+        return ResponseEntity.ok()
+                .cacheControl(CacheControl.noStore())
+                .body(imageService.getImages(
+                        authorizedSiteId,
+                        sourceTransactionId
+                ));
+    }
+
+    @GetMapping("/site/{siteId}/transaction/{sourceTransactionId}/images/{imageType}")
+    public ResponseEntity<byte[]> getImage(
+            @PathVariable Long siteId,
+            @PathVariable Integer sourceTransactionId,
+            @PathVariable String imageType,
+            Authentication authentication) {
+
+        Long authorizedSiteId = requireAuthorizedSiteId(
+                siteId, authentication
+        );
+
+        WeighmentImageService.ImageDownload image =
+                imageService.getImage(
+                        authorizedSiteId,
+                        sourceTransactionId,
+                        imageType
+                );
+
+        return ResponseEntity.ok()
+                .contentType(
+                        MediaType.parseMediaType(image.contentType())
+                )
+                .contentLength(image.bytes().length)
+                .cacheControl(CacheControl.noStore())
+                .header("X-Content-Type-Options", "nosniff")
+                .body(image.bytes());
+    }
+
 }

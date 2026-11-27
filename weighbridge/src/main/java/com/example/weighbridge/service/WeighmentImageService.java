@@ -1,5 +1,6 @@
 package com.example.weighbridge.service;
 
+import com.example.weighbridge.dto.WeighmentImageResponseDTO;
 import com.example.weighbridge.model.WeighmentImage;
 import com.example.weighbridge.model.WeighmentRecord;
 import com.example.weighbridge.repository.WeighmentImageRepository;
@@ -9,7 +10,8 @@ import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HexFormat;
-import java.util.Set;
+import java.util.List;
+import com.example.weighbridge.util.WeighmentImageTypeValidator;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -21,12 +23,7 @@ public class WeighmentImageService {
 
     private static final int MAX_IMAGE_SIZE = 10 * 1024 * 1024;
 
-    private static final Set<String> IMAGE_TYPES = Set.of(
-            "FirstWeightImage1",
-            "FirstWeightImage2",
-            "SecondWeightImage1",
-            "SecondWeightImage2"
-    );
+
 
     private final WeighmentRecordRepository weighmentRepository;
     private final WeighmentImageRepository imageRepository;
@@ -55,7 +52,7 @@ public class WeighmentImageService {
             );
         }
 
-        if (!IMAGE_TYPES.contains(imageType)) {
+        if (!WeighmentImageTypeValidator.isValid(imageType)) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "Invalid image type"
             );
@@ -158,4 +155,116 @@ public class WeighmentImageService {
                 "Only JPEG and PNG images are supported"
         );
     }
+
+
+    private WeighmentRecord requireVisibleWeighment(
+            Long siteId,
+            Integer transactionId) {
+
+        if (siteId == null || siteId <= 0
+                || transactionId == null || transactionId <= 0) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Invalid transaction"
+            );
+        }
+
+        return weighmentRepository
+                .findBySiteIdAndSourceTransactionId(
+                        siteId, transactionId)
+                .filter(record ->
+                        !Boolean.TRUE.equals(record.getDeleted())
+                        && !Boolean.TRUE.equals(record.getCloudHidden()))
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Weighment transaction not found"
+                ));
+    }
+
+    public List<WeighmentImageResponseDTO> getImages(
+            Long authorizedSiteId,
+            Integer transactionId) {
+
+        WeighmentRecord weighment = requireVisibleWeighment(
+                authorizedSiteId, transactionId
+        );
+
+        return imageRepository
+                .findByWeighmentId(weighment.getId())
+                .stream()
+                .map(image -> new WeighmentImageResponseDTO(
+                        image.getId(),
+                        image.getImageType(),
+                        image.getContentType()
+                ))
+                .toList();
+    }
+
+    public record ImageDownload(
+            byte[] bytes,
+            String contentType) {
+    }
+
+    public ImageDownload getImage(
+            Long authorizedSiteId,
+            Integer transactionId,
+            String imageType) {
+
+        if (!WeighmentImageTypeValidator.isValid(imageType)) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Invalid image type"
+            );
+        }
+
+        WeighmentRecord weighment = requireVisibleWeighment(
+                authorizedSiteId, transactionId
+        );
+
+        WeighmentImage image = imageRepository
+                .findByWeighmentIdAndImageType(
+                        weighment.getId(), imageType)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Image not found"
+                ));
+
+        String expectedPrefix =
+                "sites/" + authorizedSiteId
+                + "/transactions/" + transactionId
+                + "/" + imageType + "/";
+
+        if (image.getStorageKey() == null
+                || !image.getStorageKey().startsWith(expectedPrefix)) {
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Invalid image storage reference"
+            );
+        }
+
+        byte[] bytes = storageService.downloadImage(
+                image.getStorageKey()
+        );
+
+        String contentType;
+
+        try {
+            contentType = detectContentType(bytes);
+        } catch (ResponseStatusException ex) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_GATEWAY,
+                    "Invalid stored image"
+            );
+        }
+
+        if (!contentType.equals(image.getContentType())) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_GATEWAY,
+                    "Stored image content type mismatch"
+            );
+        }
+
+        return new ImageDownload(bytes, contentType);
+    }
+
 }

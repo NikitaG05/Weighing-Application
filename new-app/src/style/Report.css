@@ -232,18 +232,18 @@
   box-shadow: 0 10px 35px rgba(0, 0, 0, 0.2);
 }
 
-.reports-modal h3 {
+.reports-modal > h3 {
   margin: 0 0 20px;
   font-size: 22px;
 }
 
-.reports-modal p {
+.reports-modal > p {
   margin: 10px 0;
   padding-bottom: 8px;
   border-bottom: 1px solid #eee;
 }
 
-.reports-modal button {
+.reports-modal > button {
   margin-top: 15px;
   padding: 10px 20px;
   border: none;
@@ -251,4 +251,23 @@
   background: #2563eb;
   color: white;
   cursor: pointer;
+}
+
+/* Expanded Reports modal for CCTV gallery */
+.reports-modal:has(.wig-root) {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1000px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+@media (max-width: 600px) {
+  .reports-modal-overlay {
+    padding: 10px;
+  }
+
+  .reports-modal {
+    padding: 16px;
+  }
 }

@@ -1,0 +1,134 @@
+﻿.wig-root {
+  margin-top: 24px;
+  padding-top: 18px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.wig-header,
+.wig-preview-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.wig-header h3 {
+  margin: 0;
+  color: #1e293b;
+}
+
+.wig-root button {
+  cursor: pointer;
+}
+
+.wig-header button,
+.wig-preview-header button {
+  padding: 8px 14px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 6px;
+}
+
+.wig-header button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.wig-group {
+  margin-bottom: 20px;
+}
+
+.wig-group h4 {
+  color: #334155;
+  margin: 12px 0;
+}
+
+.wig-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr));
+  gap: 14px;
+}
+
+.wig-image-card {
+  padding: 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #f8fafc;
+  min-width: 0;
+}
+
+.wig-image-card strong {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+
+.wig-thumbnail {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  overflow: hidden;
+  border-radius: 6px;
+}
+
+.wig-thumbnail img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: contain;
+  background: #0f172a;
+  cursor: zoom-in;
+}
+
+.wig-empty {
+  padding: 18px;
+  text-align: center;
+  color: #64748b;
+  background: #f8fafc;
+  border-radius: 8px;
+}
+
+.wig-error {
+  color: #b91c1c;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.wig-preview {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.wig-preview-content {
+  background: white;
+  padding: 16px;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 1100px;
+  max-height: 95vh;
+  overflow: auto;
+}
+
+.wig-preview-content img {
+  display: block;
+  width: 100%;
+  max-height: 78vh;
+  object-fit: contain;
+}
+
+.uw-modal:has(.wig-root) {
+  width: min(1000px, 95vw);
+  max-width: 1000px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
