@@ -6,6 +6,7 @@ import UserWeighments from "./UserWeighments";
 import WeighmentReports from "./Reports/WeighmentReports";
 import WeighmentAnalytics from "./Reports/WeighmentAnalytics";
 import ThemeSelector from "./ThemeSelector";
+import UserWeighbridgeStatus from "./UserWeighbridgeStatus";
 import "../style/AdminDashboard.css";
 import "../style/UserWeighments.css";
 
@@ -96,10 +97,10 @@ const menus = [
   ["parties", "Party Master", "users"],
   ["vehicles", "Vehicle Master", "reports"],
   ["products", "Products", "masters"],
-  ["weighments", "Weighments", "masters"],
-  ["reports", "Reports", "reports"],
+  ["weighments", "Report", "reports"],
+  ["reports", "WB Reports", "reports"],
   ["analytics", "Analytics", "analytics"],
-  ["appearance", "Appearance", "palette"]
+  ["appearance", "Appearance", "palette"], ["status", "Status", "check"]
 ];
 
 function ReadOnlyTable({ title, rows, columns }) {
@@ -142,6 +143,8 @@ function ReadOnlyTable({ title, rows, columns }) {
 
 export default function UserDashboard({ username, onLogout }) {
   const [active, setActive] = useState("dashboard");
+  const [openGroup, setOpenGroup] = useState("");
+  const [profileOpen, setProfileOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [sites, setSites] = useState([]);
@@ -250,19 +253,42 @@ export default function UserDashboard({ username, onLogout }) {
         </div>
         <div className="admin-sidebar-divider" />
         <nav className="admin-sidebar-nav">
-          {!collapsed && <span className="admin-sidebar-section-label">WORKSPACE</span>}
-          {menus.map(([id, label, icon]) => (
-            <button type="button" key={id} title={label}
-              className={`admin-sidebar-link ${active === id ? "active" : ""}`}
-              onClick={() => navigate(id)}>
-              <span className="admin-sidebar-link-icon"><DashboardIcon name={icon} /></span>
-              {!collapsed && <span className="admin-sidebar-link-label">{label}</span>}
-            </button>
-          ))}
-        </nav>
-        <div className="admin-sidebar-bottom">
-          <button className="admin-sidebar-link admin-sidebar-logout" type="button" onClick={onLogout}><span className="admin-sidebar-link-icon"><DashboardIcon name="logout" /></span><span className="admin-sidebar-link-label">Logout</span></button>
-        </div>
+  {!collapsed && <span className="admin-sidebar-section-label">WORKSPACE</span>}
+  {[
+    ["dashboard", "Dashboard", "dashboard", []],
+    ["master", "Master", "masters", ["parties", "vehicles", "products"]],
+    ["reportGroup", "Reports", "reports", ["weighments", "reports"]],
+    ["status", "Status", "check", []]
+  ].map(([id, label, icon, children]) => (
+    <div key={id}>
+      <button type="button" title={label}
+        className={`admin-sidebar-link ${active === id || children.includes(active) ? "active" : ""}`}
+        aria-expanded={children.length ? openGroup === id : undefined}
+        onClick={() => {
+          if (children.length) {
+            setCollapsed(false);
+            setOpenGroup(v => v === id ? "" : id);
+          } else {
+            setOpenGroup("");
+            navigate(id);
+          }
+        }}>
+        <span className="admin-sidebar-link-icon"><DashboardIcon name={icon} /></span>
+        {!collapsed && <span className="admin-sidebar-link-label">{label}</span>}
+        {!collapsed && children.length > 0 && <span>{openGroup === id ? "-" : "+"}</span>}
+      </button>
+      {!collapsed && openGroup === id && children.map(child => (
+        <button type="button" key={child}
+          className={`admin-sidebar-link ${active === child ? "active" : ""}`}
+          style={{ paddingLeft: "32px", fontSize: "13px" }}
+          onClick={() => navigate(child)}>
+          <span className="admin-sidebar-link-label">{menus.find(m => m[0] === child)?.[1]}</span>
+        </button>
+      ))}
+    </div>
+  ))}
+</nav>
+        
       </aside>
 
       <div className="admin-workspace">
@@ -272,15 +298,30 @@ export default function UserDashboard({ username, onLogout }) {
               onClick={() => setMobileOpen(v => !v)}><DashboardIcon name="menu" /></button>
             <div><span className="admin-topbar-eyebrow">WEIGHBRIDGE CLOUD</span><h1>{title}</h1></div>
           </div>
-          <div className="admin-topbar-user">
-            <span className="admin-topbar-welcome">Welcome, {username}</span>
-            <span className="admin-user-avatar">{(username || "U").charAt(0).toUpperCase()}</span>
-          </div>
+          <div className="admin-topbar-user" style={{ position: "relative" }}>
+  <span className="admin-topbar-welcome">Welcome, {username}</span>
+  <button type="button" className="admin-user-avatar"
+    aria-label="Account menu" aria-expanded={profileOpen}
+    onClick={() => setProfileOpen(v => !v)}>
+    {(username || "U").charAt(0).toUpperCase()}
+  </button>
+  {profileOpen && (
+    <div style={{ position: "absolute", right: 0, top: "100%", zIndex: 100, background: "#17365d", padding: "10px", borderRadius: "8px", minWidth: "160px" }}>
+      <button type="button" className="admin-sidebar-link"
+        onClick={() => { navigate("appearance"); setProfileOpen(false); }}>
+        Appearance
+      </button>
+      <button type="button" className="admin-sidebar-link" onClick={onLogout}>
+        Logout
+      </button>
+    </div>
+  )}
+</div>
         </header>
 
         <main className="admin-main-area">
           <div className="admin-content">
-            {active !== "appearance" && active !== "weighments" &&
+            {active !== "appearance" && active !== "weighments" && active !== "status" &&
               <div className="wa-site-selector">
                 <label>Weighbridge Site
                   <select className="wa-site-select" value={siteId} disabled={sitesLoading || !sites.length}
@@ -295,9 +336,10 @@ export default function UserDashboard({ username, onLogout }) {
             {siteError && <p className="uw-error" role="alert">{siteError}</p>}
 
             {active === "appearance" && <ThemeSelector />}
+            {active === "status" && <UserWeighbridgeStatus />}
             {active === "weighments" && <UserWeighments />}
 
-            {active !== "appearance" && active !== "weighments" && (
+            {active !== "appearance" && active !== "weighments" && active !== "status" && (
               sitesLoading ? <p>Loading assigned sites...</p> :
               !siteId ? <p>No weighbridge site assigned to your account.</p> :
               <>

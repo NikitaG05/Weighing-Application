@@ -1,6 +1,6 @@
 const BASE_URL = `${(process.env.REACT_APP_API_URL || "").replace(/\/$/, "")}/api/user/weighments`;
 
-async function request(path, signal) {
+async function request(path, signal, baseUrl = BASE_URL) {
   let session;
   try {
     session = JSON.parse(sessionStorage.getItem("weighbridgeSession") || "{}");
@@ -10,7 +10,7 @@ async function request(path, signal) {
   const token = session.accessToken;
   if (!token) throw new Error("Session expired. Please log in again.");
 
-  const response = await fetch(`${BASE_URL}${path}`, {
+  const response = await fetch(`${baseUrl}${path}`, {
     headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
     signal,
   });
@@ -26,3 +26,5 @@ async function request(path, signal) {
 export const getMyWeighmentSites = (signal) => request("/sites", signal);
 export const getUserWeighments = (siteId, signal) =>
   request(`/site/${encodeURIComponent(siteId)}`, signal);
+
+export const getUserWeighbridgeStatus = (signal) => request("", signal, BASE_URL.replace(/\/weighments$/, "/weighbridge-status"));
