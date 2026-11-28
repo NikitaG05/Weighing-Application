@@ -7,6 +7,7 @@ import WeighmentImageGallery from "./WeighmentImageGallery";
 
 const columns = [
   ["TicketNo", "Ticket No."],
+  ["SiteName", "Site"],
   ["WBName", "Weighbridge"],
   ["VehicleNo", "Vehicle No."],
   ["PartyName", "Party"],
@@ -72,7 +73,7 @@ function Reports({ accessToken }) {
   const [page, setPage] = useState(1);
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [sites, setSites] = useState([]);
-  const [selectedSiteId, setSelectedSiteId] = useState("all");
+  const [selectedSiteId, setSelectedSiteId] = useState("");
   const [sitesLoading, setSitesLoading] = useState(true);
   const [sitesError, setSitesError] = useState("");
   const requestId = useRef(0);
@@ -103,13 +104,13 @@ function Reports({ accessToken }) {
         );
         setSites(validSites);
         setSelectedSiteId((previous) => {
-              if (previous === "all") return "all";
+              if (!previous) return "";
 
               const exists = validSites.some(
                 (site) => String(site.id ?? site.siteId) === String(previous)
               );
 
-              return exists ? previous : "all";
+              return exists ? previous : "";
             });
       } catch (err) {
         if (!cancelled) {
@@ -138,7 +139,7 @@ function Reports({ accessToken }) {
 
   // Load completed reports whenever the site changes or Refresh is clicked.
   const loadReports = useCallback(async () => {
-    const currentRequest = ++requestId.current;
+    const currentRequest = ++requestId.current; if (!selectedSiteId) { setRecords([]); setError(""); setLoading(false); setSelectedRecord(null); return; }
 
     setLoading(true);
     setError("");
@@ -147,7 +148,7 @@ function Reports({ accessToken }) {
       const data = await weighmentReportApi.getLocalReports(selectedSiteId);
       if (currentRequest !== requestId.current) return;
 
-      setRecords(Array.isArray(data) ? data.map(normalizeRecord) : []);
+      setRecords(Array.isArray(data) ? data.map(normalizeRecord).filter(record => String(record.siteId) === String(selectedSiteId)).map(record => ({ ...record, SiteName: sites.find(site => String(site.id ?? site.siteId) === String(record.siteId))?.siteName ?? sites.find(site => String(site.id ?? site.siteId) === String(record.siteId))?.name ?? `Site ${record.siteId}` })) : []);
       setPage(1);
     } catch (err) {
       if (currentRequest !== requestId.current) return;
@@ -157,7 +158,7 @@ function Reports({ accessToken }) {
     } finally {
       if (currentRequest === requestId.current) setLoading(false);
     }
-  }, [selectedSiteId]);
+  }, [selectedSiteId, sites]);
 
   useEffect(() => {
     loadReports();
@@ -261,13 +262,13 @@ function Reports({ accessToken }) {
           id="report-site"
           value={selectedSiteId}
           onChange={(event) => {
-            setSelectedSiteId(event.target.value);
+            requestId.current += 1; setSelectedRecord(null); setError(""); setSelectedSiteId(event.target.value);
             setRecords([]);
             setPage(1);
           }}
           disabled={sitesLoading || Boolean(sitesError)}
         >
-          <option value="all">All Weighbridge Sites</option>
+          <option value="">Select Weighbridge Site</option>
           {sites.map((site) => {
             const id = site.id ?? site.siteId;
             return (
@@ -423,7 +424,7 @@ function Reports({ accessToken }) {
       ) : (
         !loading &&
         !error && (
-          <p>No matching records found.</p>
+          <p>{selectedSiteId ? "No matching records found." : "Please select a weighbridge site to view reports."}</p>
         )
       )}
 

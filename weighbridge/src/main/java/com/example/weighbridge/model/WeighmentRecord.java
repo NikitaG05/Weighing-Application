@@ -13,6 +13,10 @@ import jakarta.persistence.*;
         @UniqueConstraint(
             name = "uk_weighment_site_transaction",
             columnNames = {"site_id", "source_transaction_id"}
+        ),
+        @UniqueConstraint(
+            name = "uk_weighment_site_ticket",
+            columnNames = {"site_id", "ticket_no"}
         )
     }
 )

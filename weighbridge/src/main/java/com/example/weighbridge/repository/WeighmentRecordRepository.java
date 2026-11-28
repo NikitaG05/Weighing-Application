@@ -58,4 +58,6 @@ public interface WeighmentRecordRepository
             Integer sourceTransactionId
     );
 
+
+    boolean existsBySiteIdAndTicketNoAndSourceTransactionIdNot(Long siteId, String ticketNo, Integer sourceTransactionId);
 }
