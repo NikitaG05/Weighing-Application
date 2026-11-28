@@ -1,6 +1,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import weighmentReportApi from "../../api/weighmentReportApi";
+import { getUserWeighments } from "../../api/UserWeighmentApi";
 import "../../style/Report.css";
 
 const columns = [
@@ -35,7 +36,7 @@ const normalizeRecord = (record) => ({
   ShiftName: record.shiftName ?? record.ShiftName,
 });
 
-function Reports({ siteId }) {
+function Reports({ siteId, readOnly = false }) {
   const [records, setRecords] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -57,7 +58,7 @@ function Reports({ siteId }) {
     setError("");
 
     try {
-      const data = await weighmentReportApi.getLocalReports(siteId);
+      const data = await (readOnly ? getUserWeighments(siteId).then(rows => rows.filter(r => r.completed === true && r.deleted !== true)) : weighmentReportApi.getLocalReports(siteId));
 
       const normalized = Array.isArray(data)
         ? data.map(normalizeRecord)
@@ -71,7 +72,7 @@ function Reports({ siteId }) {
     } finally {
       setLoading(false);
     }
-  }, [siteId]);
+  }, [siteId, readOnly]);
 
   useEffect(() => {
     loadReports();
