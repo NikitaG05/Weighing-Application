@@ -70,6 +70,26 @@ public class WeighmentSyncService {
                 )
                 .orElseGet(WeighmentRecord::new);
 
+        String normalizedTicketNo = request.ticketNo().trim();
+
+        if (repository.existsBySiteIdAndTicketNoAndSourceTransactionIdNot(
+                authorizedSiteId,
+                normalizedTicketNo,
+                request.sourceTransactionId())) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Ticket number already exists for this site"
+            );
+        }
+
+        if (record.getId() != null
+                && !normalizedTicketNo.equals(record.getTicketNo())) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Source transaction ID is already associated with a different ticket"
+            );
+        }
+
         Long incomingRevision = request.sourceRevision();
         Long storedRevision = record.getSourceRevision();
 
@@ -112,7 +132,7 @@ public class WeighmentSyncService {
         record.setSourceTransactionId(
                 request.sourceTransactionId()
         );
-        record.setTicketNo(request.ticketNo().trim());
+        record.setTicketNo(normalizedTicketNo);
         record.setWbName(request.wbName());
         record.setVehicleNo(request.vehicleNo());
         record.setPartyName(request.partyName());
@@ -133,7 +153,23 @@ public class WeighmentSyncService {
         record.setOperatorName(request.operatorName());
         record.setShiftName(request.shiftName());
 
-        return toResponse(repository.saveAndFlush(record));
+        try {
+            return toResponse(repository.saveAndFlush(record));
+        } catch (org.springframework.dao.DataIntegrityViolationException ex) {
+            Throwable cause = ex;
+            while (cause != null) {
+                if (cause instanceof java.sql.SQLException sqlEx
+                        && sqlEx.getErrorCode() == 1062) {
+                    throw new ResponseStatusException(
+                            HttpStatus.CONFLICT,
+                            "Duplicate ticket or source transaction for this site",
+                            ex
+                    );
+                }
+                cause = cause.getCause();
+            }
+            throw ex;
+        }
     }
 
     @Transactional(readOnly = true)

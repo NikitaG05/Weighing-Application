@@ -34,15 +34,18 @@ public class LocalReportsController {
 
     @GetMapping("/local")
     public ResponseEntity<List<WeighmentRecord>> getCloudReports(
-            @RequestParam(required = false) Long siteId) {
+            @RequestParam("siteId") Long siteId) {
 
-        if (siteId != null && siteId <= 0) {
+        if (siteId == null || siteId <= 0) {
             return ResponseEntity.badRequest().build();
         }
 
-        List<WeighmentRecord> records = siteId == null
-                ? repository.findByCompletedTrueAndDeletedFalseAndCloudHiddenFalseOrderByTicketDateDesc()
-                : repository.findBySiteIdAndCompletedTrueAndDeletedFalseAndCloudHiddenFalseOrderByTicketDateDesc(siteId);
+        if (!siteRepository.existsById(siteId)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        List<WeighmentRecord> records =
+                repository.findBySiteIdAndCompletedTrueAndDeletedFalseAndCloudHiddenFalseOrderByTicketDateDesc(siteId);
 
         Set<Long> missingSiteIds = records.stream()
                 .filter(record -> record.getWbName() == null
